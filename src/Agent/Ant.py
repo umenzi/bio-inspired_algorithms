@@ -13,6 +13,7 @@ class Ant(Agent):
 
     def __init__(self, maze, path_specification, convergence_iter, trail):
         super().__init__(maze, path_specification)
+
         self.rand = random
         self.convergence_iter = convergence_iter
         self.trail = trail
@@ -20,13 +21,25 @@ class Ant(Agent):
     def find_route(self):
         """
         Method that performs a single run through the maze by the ant.
+
         :return: The route the ant found through the maze.
         """
-        route = Route(self.start)
-        visited = [self.start]
-        stack = []
-        while self.current_position != self.end:
 
+        # We start from the starting route
+        route = Route(self.start)
+
+        # By marking visited cells, in the maze and setting their pheromone level to 0, upcoming agents will never
+        # choose said cells as a path to explore. This allows to avoid infinite loops where agents go over a path
+        # infinite times, ending up in positions they have already visited
+        visited = [self.start]
+
+        # Improvement: the ants have memory, which allow them to know which were decision points in their so-far
+        # explored path This way, we avoid dead ends, and the ants can go back to the previous decision point
+        stack = []
+
+        # Until we reach the end
+        while self.current_position != self.end:
+            # We get the total surrounding pheromone at the current position
             self.convergence_iter -= 1
 
             if self.convergence_iter == 0:
@@ -36,6 +49,7 @@ class Ant(Agent):
             tot_pheromones = surrounding_pheromone.get_total_surrounding_pheromone()
 
             # Cumulative probabilities
+            # Here probability = p^k_{ij}(t), where \eta_{ij}=1 (as the next direction is always one step away).
             probabilities = [0.0 for _ in range(4)]
 
             for i in range(4):

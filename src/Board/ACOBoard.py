@@ -34,7 +34,8 @@ class ACOBoard(Board):
 
     def add_pheromone_route(self, route, q):
         """
-        Update the pheromones along a certain route according to a certain Q
+        Update the pheromones along a certain route according to a certain Q.
+
         :param route: The route of the ants
         :param q: Normalization factor for amount of dropped pheromone
         :return:

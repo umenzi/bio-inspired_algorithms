@@ -4,6 +4,17 @@ from multiprocessing import Pool
 
 
 class AntColonyOptimization:
+    """
+    Ant Colony Optimization is an algorithm based on the exploratory behaviour of ants to find food.
+
+    Agents in the algorithm act as ants and deposit pheromone on the paths they travel, which will be updated based
+    on the quality of said path. In our case, this relates directly to the length of the route. Through this process,
+    agents search for the optimal path through a graph or network.
+
+    The ACO algorithm is put in use in optimization problems where the search space is large, and many solutions are
+    possible, but not all are optimal. This includes the Travelling Salesman Problem. It has also been used to solve
+    other problems such as resource allocation, machine learning, and data mining.
+    """
 
     def __init__(self, maze: ACOBoard, ants_per_gen, generations, q, evaporation, convergence_iter, no_change_iter,
                  trail, sigma_elite, num_processes=6):
@@ -19,6 +30,19 @@ class AntColonyOptimization:
         self.sigma_elite = sigma_elite
 
     def find_shortest_route(self, path_specification):
+        """
+        The ACO algorithm to find the shortest route across generations.
+
+        We first reset the pheromones (i.e. initialize them), then we create a specified
+        number of ants for each generation and keep track of the shortest path found amongst all of them.
+        After each generation, we evaporate the existing pheromones by the chosen evaporation parameter
+        ρ, and we add the pheromones of each of the routes found by the ants. This process is shown in
+        the following pseudocode block.
+
+        :param path_specification:
+        :return:
+        """
+
         self.maze.reset()
 
         best_route = None
@@ -30,6 +54,9 @@ class AntColonyOptimization:
         for generation in range(self.generations):
             print("Generation", generation)
 
+            # We introduce multi-threading
+            # Basically, each ant compute their shortest path on a separate thread
+            # This way, more ants are deployed to find routes (hence, the better our algorithm will be)
             with Pool(self.num_processes) as p:
                 routes = p.map(self.find_route_parallel, [path_specification] * self.ants_per_gen)
 
@@ -64,7 +91,7 @@ class AntColonyOptimization:
 
             self.maze.add_pheromone_routes(routes, self.q)
 
-            # Adding the pheromones of the best path using elitism
+            # Performance Improvement: Adding the pheromones of the best path using elitism
             for i in range(self.sigma_elite):
                 self.maze.add_pheromone_route(best_route, self.q)
 
