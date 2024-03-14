@@ -1,9 +1,11 @@
-import random
 import math
+import random
 
-import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib import patches
+import numpy as np
+
+from helpers.Coordinate import Coordinate
+from helpers.Route import Route
 
 
 def compute_inner_space(width, height):
@@ -121,6 +123,44 @@ class Environment:
 
         # Create a bounds for the color map
         bounds = [-0.5, 0.5, 1.5, 2.5, 3.5]
+
+        # Create a norm for the color map
+        norm = plt.cm.colors.BoundaryNorm(bounds, cmap.N)
+
+        # Plot the grid
+        plt.imshow(grid_copy, cmap=cmap, norm=norm, origin='lower')
+
+        # Hide the grid lines
+        plt.grid(False)
+
+        # Hide the x and y ticks
+        plt.xticks([])
+        plt.yticks([])
+
+        # Show the plot
+        plt.show()
+
+    def visualize_environment_with_route(self, route: Route = None):
+        # Create a copy of the grid to avoid modifying the original
+        grid_copy = self.grid.copy()
+        # Set start and end positions to special values
+        grid_copy[self.start[0]][self.start[1]] = 2
+        grid_copy[self.end[0]][self.end[1]] = 3
+
+        # If a route is provided, draw the route on the grid
+        if route is not None:
+            current_point: Coordinate = route.start
+            grid_copy[current_point.x][current_point.y] = 4
+
+            for direction in route.get_route():
+                current_point = current_point.add_direction(direction)
+                grid_copy[current_point.x][current_point.y] = 4
+
+        # Create a color map for the grid
+        cmap = plt.cm.colors.ListedColormap(['darkgrey', 'white', 'red', 'green', 'blue'])
+
+        # Create a bounds for the color map
+        bounds = [-0.5, 0.5, 1.5, 2.5, 3.5, 4.5]
 
         # Create a norm for the color map
         norm = plt.cm.colors.BoundaryNorm(bounds, cmap.N)

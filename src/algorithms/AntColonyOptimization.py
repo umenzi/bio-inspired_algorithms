@@ -29,7 +29,7 @@ class AntColonyOptimization:
         self.num_processes = num_processes
         self.sigma_elite = sigma_elite
 
-    def find_shortest_route(self, path_specification):
+    def find_shortest_route(self, path_specification, print_progress=True):
         """
         The ACO algorithm to find the shortest route across generations.
 
@@ -40,6 +40,7 @@ class AntColonyOptimization:
         the following pseudocode block.
 
         :param path_specification:
+        :param print_progress: whether we print the result of each generation
         :return:
         """
 
@@ -52,7 +53,8 @@ class AntColonyOptimization:
         end = path_specification.get_end()
 
         for generation in range(self.generations):
-            print("Generation", generation)
+            if print_progress:
+                print("Generation", generation)
 
             # We introduce multi-threading
             # Basically, each ant compute their shortest path on a separate thread
@@ -75,13 +77,15 @@ class AntColonyOptimization:
             else:
                 count = 0
 
-            print("Routes found so far:", len(routes))
-            if best_route is not None:
-                print("Best route's length:", best_route.size())
-            print("\n")
+            if print_progress:
+                print("Routes found so far:", len(routes))
+                if best_route is not None:
+                    print("Best route's length:", best_route.size())
+                print("\n")
 
             if count >= self.no_change_iter:
-                print("No change for many generations")
+                if print_progress:
+                    print("No change for many generations")
                 return best_route
 
             if len(routes) == 0:
