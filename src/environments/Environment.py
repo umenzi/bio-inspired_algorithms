@@ -155,16 +155,16 @@ class Environment:
         """
         Method that creates an environment with obstacles.
 
-        :param width: of the board
-        :param height: of the board
+        :param width: of the environment
+        :param height: of the environment
         :param start_pos: of the agents (we assume all agents start at the same position)
         :param end_pos: of the agents (we assume all agents aim to arrive to the same position)
         :param obstacle_radius: radius of the obstacles, which have a circular shape
         :param obstacle_percentage: how many obstacles (in percentage, from 0 to 1) to generate
-        :return: a board object with the specified parameters
+        :return: an environment object with the specified parameters
         """
 
-        # First, we check that creating the board is possible
+        # First, we check that creating the environment is possible
         if width < 0 or height < 0 or obstacle_radius < 0 or obstacle_percentage < 0.0 \
                 or not (0 <= start_pos[0] <= width) or not (0 <= start_pos[1] <= height) or not \
                 (0 <= end_pos[0] <= width) or not (0 <= end_pos[1] <= height) or \
@@ -197,7 +197,7 @@ class Environment:
                     for y in range(obstacle_pos[1] - obstacle_radius, obstacle_pos[1] + obstacle_radius):
                         grid[x, y] = 0
 
-        print("Finished preparing the board")
+        print("Finished preparing the environment")
 
         return Environment(width, height, grid, Coordinate(start_pos[0], start_pos[1]),
                            Coordinate(end_pos[0], end_pos[1]))
