@@ -110,39 +110,10 @@ class Environment:
             string += "\n"
         return string
 
-    def visualize_environment(self):
+    def visualize_environment(self, route: Route = None):
         # Create a copy of the grid to avoid modifying the original
         grid_copy = self.grid.copy()
 
-        # Set start and end positions to special values
-        grid_copy[self.start[0]][self.start[1]] = 2
-        grid_copy[self.end[0]][self.end[1]] = 3
-
-        # Create a color map for the grid
-        cmap = plt.cm.colors.ListedColormap(['darkgrey', 'white', 'red', 'green'])
-
-        # Create a bounds for the color map
-        bounds = [-0.5, 0.5, 1.5, 2.5, 3.5]
-
-        # Create a norm for the color map
-        norm = plt.cm.colors.BoundaryNorm(bounds, cmap.N)
-
-        # Plot the grid
-        plt.imshow(grid_copy, cmap=cmap, norm=norm, origin='lower')
-
-        # Hide the grid lines
-        plt.grid(False)
-
-        # Hide the x and y ticks
-        plt.xticks([])
-        plt.yticks([])
-
-        # Show the plot
-        plt.show()
-
-    def visualize_environment_with_route(self, route: Route = None):
-        # Create a copy of the grid to avoid modifying the original
-        grid_copy = self.grid.copy()
         # Set start and end positions to special values
         grid_copy[self.start[0]][self.start[1]] = 2
         grid_copy[self.end[0]][self.end[1]] = 3
