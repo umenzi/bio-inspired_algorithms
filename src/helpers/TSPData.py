@@ -3,13 +3,13 @@ import re
 import sys
 import traceback
 
-from Coordinate import Coordinate
-from PathSpecification import PathSpecification
+from helpers.Coordinate import Coordinate
+from helpers.PathSpecification import PathSpecification
 
 
 class TSPData:
     """
-    Class containing the product distances. Can be either build from a maze, a product
+    Class containing the product distances. Can be either build from an environment, a product
     location list and a PathSpecification or be reloaded from a file.
     """
 
@@ -35,7 +35,7 @@ class TSPData:
         Calculate the routes from the product locations to each other, the start, and the end.
 
         Additionally generate arrays that contain the length of all the routes.
-        :param aco: The ACO Board
+        :param aco: The ACO environments
         """
 
         self.product_to_product = self.build_distance_matrix(aco)
@@ -148,7 +148,7 @@ class TSPData:
     def build_distance_matrix(self, aco):
         """
         Calculate the optimal routes between all the individual routes
-        :param aco: ACO Board to calculate optimal routes in
+        :param aco: ACO environments to calculate optimal routes in
         :return: Optimal routes between all products in 2d array
         """
 
@@ -168,7 +168,7 @@ class TSPData:
     def build_start_to_products(self, aco):
         """
         Calculate optimal route between the start and all the products
-        :param aco: ACO Board to calculate optimal routes in
+        :param aco: ACO environments to calculate optimal routes in
         :return: Optimal route from start to products
         """
 
@@ -182,7 +182,7 @@ class TSPData:
     def build_products_to_end(self, aco):
         """
         Calculate optimal routes between the products and the end point
-        :param aco: The ACO Board to calculate optimal routes in
+        :param aco: The ACO environments to calculate optimal routes in
         :return: Optimal route from products to end
         """
 

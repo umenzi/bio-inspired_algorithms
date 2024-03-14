@@ -1,5 +1,5 @@
-from Board.ACOBoard import ACOBoard
-from Agent.Ant import Ant
+from environments import ACOEnvironment
+from agents.Ant import Ant
 from multiprocessing import Pool
 
 
@@ -16,9 +16,9 @@ class AntColonyOptimization:
     other problems such as resource allocation, machine learning, and data mining.
     """
 
-    def __init__(self, maze: ACOBoard, ants_per_gen, generations, q, evaporation, convergence_iter, no_change_iter,
-                 trail, sigma_elite, num_processes=6):
-        self.maze = maze
+    def __init__(self, environment: ACOEnvironment, ants_per_gen, generations, q, evaporation, convergence_iter,
+                 no_change_iter, trail, sigma_elite, num_processes=6):
+        self.environment = environment
         self.ants_per_gen = ants_per_gen
         self.generations = generations
         self.q = q
@@ -43,7 +43,7 @@ class AntColonyOptimization:
         :return:
         """
 
-        self.maze.reset()
+        self.environment.reset()
 
         best_route = None
         count = 0
@@ -87,13 +87,13 @@ class AntColonyOptimization:
             if len(routes) == 0:
                 continue
 
-            self.maze.evaporate(self.evaporation)
+            self.environment.evaporate(self.evaporation)
 
-            self.maze.add_pheromone_routes(routes, self.q)
+            self.environment.add_pheromone_routes(routes, self.q)
 
             # Performance Improvement: Adding the pheromones of the best path using elitism
             for i in range(self.sigma_elite):
-                self.maze.add_pheromone_route(best_route, self.q)
+                self.environment.add_pheromone_route(best_route, self.q)
 
             if (generation + 1) == 1 or (generation + 1) == 3 or (generation + 1) == 5 \
                     or (generation + 1) == 9 or (generation + 1) % 10 == 0:
@@ -102,5 +102,5 @@ class AntColonyOptimization:
         return best_route, checkpoints
 
     def find_route_parallel(self, path_specification):
-        ant = Ant(self.maze, path_specification, self.convergence_iter, self.trail)
+        ant = Ant(self.environment, path_specification, self.convergence_iter, self.trail)
         return ant.find_route()

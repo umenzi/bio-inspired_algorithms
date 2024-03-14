@@ -1,9 +1,9 @@
-from Helper.Direction import Direction
+from helpers.Direction import Direction
 
 
 class SurroundingPheromone:
     """
-    Class containing the pheromone information around a certain point in the maze.
+    Class containing the pheromone information around a certain point in the environment.
     """
 
     def __init__(self, north, east, south, west):

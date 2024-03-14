@@ -1,4 +1,4 @@
-from Helper.Direction import Direction
+from helpers.Direction import Direction
 
 
 class Coordinate:

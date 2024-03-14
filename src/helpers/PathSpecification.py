@@ -1,7 +1,4 @@
-import re
-import traceback
-import sys
-from Helper.Coordinate import Coordinate
+from helpers.Coordinate import Coordinate
 
 
 class PathSpecification:
@@ -52,30 +49,15 @@ class PathSpecification:
         return "Start: " + str(self.start) + " End: " + str(self.end)
 
     @staticmethod
-    def read_coordinates(file_path):
+    def read_coordinates(start_pos: (int, int), end_pos: (int, int)):
         """
-        Reads the coordinates file and returns a path specification.
+        Reads the coordinates and returns a path specification.
 
-        :param file_path: String of the path to the file.
-        :return: Specification contained in the file.
+        :param start_pos: starting position of the agents
+        :param end_pos: final position of the agents
+        :return: Specification of the environment.
         """
 
-        try:
-            f = open(file_path, "r")
-            lines = f.read().splitlines()
-
-            start = re.compile("[,;]\\s*").split(lines[0])
-            start_x = int(start[0])
-            start_y = int(start[1])
-
-            end = re.compile("[,;]\\s*").split(lines[1])
-            end_x = int(end[0])
-            end_y = int(end[1])
-
-            start_coordinate = Coordinate(start_x, start_y)
-            end_coordinate = Coordinate(end_x, end_y)
-            return PathSpecification(start_coordinate, end_coordinate)
-        except FileNotFoundError:
-            print("Error reading coordinate file " + file_path)
-            traceback.print_exc()
-            sys.exit()
+        start_coordinate = Coordinate(start_pos[0], start_pos[1])
+        end_coordinate = Coordinate(end_pos[0], end_pos[1])
+        return PathSpecification(start_coordinate, end_coordinate)

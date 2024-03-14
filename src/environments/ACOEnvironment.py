@@ -1,17 +1,18 @@
-from Board.Board import Board
-from Helper.Coordinate import Coordinate
-from Helper.SurroundingPheromone import SurroundingPheromone
-from Helper.Direction import Direction
+from environments.Environment import Environment
+
+from helpers.Coordinate import Coordinate
+from helpers.SurroundingPheromone import SurroundingPheromone
+from helpers.Direction import Direction
 
 
-class ACOBoard(Board):
+class ACOEnvironment(Environment):
     """
-    Class that holds all the maze data. This means the pheromones, the open and blocked tiles in the system as
+    Class that holds all the environment data. This means the pheromones, the open and blocked tiles in the system as
     well as the starting and end coordinates.
     """
 
-    def __init__(self, walls, width, height):
-        super().__init__(width, height, walls)
+    def __init__(self, width, height, grid, start=None, end=None):
+        super().__init__(width, height, grid, start, end)
 
         # Specific to ACO, we use pheromones to guide the ants.
         self.pheromones = None
@@ -26,7 +27,7 @@ class ACOBoard(Board):
 
         for i in range(self.width):
             for j in range(self.height):
-                if self.walls[i][j] == 0:
+                if self.grid[i][j] == 0:
                     self.pheromones[i][j] = 0
 
     def reset(self):
@@ -93,7 +94,10 @@ class ACOBoard(Board):
         return self.pheromones[pos.x][pos.y]
 
     @staticmethod
-    def create_maze(file_path):
-        maze = Board.create_maze(file_path)
+    def create_environment(width: int, height: int, start_pos: (int, int), end_pos: (int, int),
+                           obstacle_radius: int, amount_of_obstacles: float):
+        environment = Environment.create_environment(width, height, start_pos,
+                                                     end_pos, obstacle_radius, amount_of_obstacles)
 
-        return ACOBoard(maze.walls, maze.width, maze.height)
+        return ACOEnvironment(environment.width, environment.height,
+                              environment.grid, environment.start, environment.end)

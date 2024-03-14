@@ -1,18 +1,18 @@
 import random
 
-from Agent.Agent import Agent
-from Helper.Direction import Direction
-from Helper.Route import Route
+from agents.Agent import Agent
+from helpers.Direction import Direction
+from helpers.Route import Route
 import numpy as np
 
 
 class Ant(Agent):
     """
-    Agent representing the ant functionality
+    agents representing the ant functionality
     """
 
-    def __init__(self, maze, path_specification, convergence_iter, trail):
-        super().__init__(maze, path_specification)
+    def __init__(self, environment, path_specification, convergence_iter, trail):
+        super().__init__(environment, path_specification)
 
         self.rand = random
         self.convergence_iter = convergence_iter
@@ -20,17 +20,17 @@ class Ant(Agent):
 
     def find_route(self):
         """
-        Method that performs a single run through the maze by the ant.
+        Method that performs a single run through the environment by the ant.
 
-        :return: The route the ant found through the maze.
+        :return: The route the ant found through the environment.
         """
 
         # We start from the starting route
         route = Route(self.start)
 
-        # By marking visited cells, in the maze and setting their pheromone level to 0, upcoming agents will never
-        # choose said cells as a path to explore. This allows to avoid infinite loops where agents go over a path
-        # infinite times, ending up in positions they have already visited
+        # By marking visited cells, in the environment and setting their pheromone level to 0, upcoming agents will
+        # never choose said cells as a path to explore. This allows to avoid infinite loops where agents go over a
+        # path infinite times, ending up in positions they have already visited
         visited = [self.start]
 
         # Improvement: the ants have memory, which allow them to know which were decision points in their so-far
@@ -45,7 +45,7 @@ class Ant(Agent):
             if self.convergence_iter == 0:
                 return None
 
-            surrounding_pheromone = self.maze.get_surrounding_pheromone(self.current_position)
+            surrounding_pheromone = self.environment.get_surrounding_pheromone(self.current_position)
             tot_pheromones = surrounding_pheromone.get_total_surrounding_pheromone()
 
             # Cumulative probabilities
