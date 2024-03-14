@@ -6,7 +6,7 @@ class PathSpecification:
     Specification of a path containing a start and end coordinate.
     """
 
-    def __init__(self, start, end):
+    def __init__(self, start: Coordinate, end: Coordinate):
         """
         Constructs a new path specification.
 
@@ -14,8 +14,8 @@ class PathSpecification:
         :param end: the final coordinate.
         """
 
-        self.start = start
-        self.end = end
+        self.start: Coordinate = start
+        self.end: Coordinate = end
 
     def get_start(self):
         """
@@ -60,4 +60,5 @@ class PathSpecification:
 
         start_coordinate = Coordinate(start_pos[0], start_pos[1])
         end_coordinate = Coordinate(end_pos[0], end_pos[1])
+
         return PathSpecification(start_coordinate, end_coordinate)

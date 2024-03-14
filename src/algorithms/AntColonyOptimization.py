@@ -16,18 +16,18 @@ class AntColonyOptimization:
     other problems such as resource allocation, machine learning, and data mining.
     """
 
-    def __init__(self, environment: ACOEnvironment, ants_per_gen, generations, q, evaporation, convergence_iter,
-                 no_change_iter, trail, sigma_elite, num_processes=6):
-        self.environment = environment
-        self.ants_per_gen = ants_per_gen
-        self.generations = generations
-        self.q = q
-        self.evaporation = evaporation
-        self.convergence_iter = convergence_iter
-        self.no_change_iter = no_change_iter
-        self.trail = trail
-        self.num_processes = num_processes
-        self.sigma_elite = sigma_elite
+    def __init__(self, environment: ACOEnvironment, ants_per_gen: int, generations: int, q: int, evaporation: float,
+                 convergence_iter: int, no_change_iter: int, trail: float, sigma_elite: int, num_processes: int = 6):
+        self.environment: ACOEnvironment = environment
+        self.ants_per_gen: int = ants_per_gen
+        self.generations: int = generations
+        self.q: int = q
+        self.evaporation: float = evaporation
+        self.convergence_iter: int = convergence_iter
+        self.no_change_iter: int = no_change_iter
+        self.trail: float = trail
+        self.num_processes: int = num_processes
+        self.sigma_elite: int = sigma_elite
 
     def find_shortest_route(self, path_specification, print_progress=True):
         """
@@ -49,8 +49,6 @@ class AntColonyOptimization:
         best_route = None
         count = 0
         checkpoints = []
-        start = path_specification.get_start()
-        end = path_specification.get_end()
 
         for generation in range(self.generations):
             if print_progress:

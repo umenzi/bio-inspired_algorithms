@@ -1,3 +1,4 @@
+from helpers.Coordinate import Coordinate
 from helpers.Direction import Direction
 
 
@@ -6,7 +7,7 @@ class Route:
     Class representing a route.
     """
 
-    def __init__(self, start):
+    def __init__(self, start: Coordinate):
         """
         Route takes a starting coordinate to initialize.
 
@@ -14,9 +15,9 @@ class Route:
         """
 
         self.route = []
-        self.start = start
+        self.start: Coordinate = start
 
-    def add(self, direction):
+    def add(self, direction: Direction):
         """
         After taking a step we add the direction we moved in.
 
@@ -80,9 +81,11 @@ class Route:
         """
 
         string = ""
+
         for direction in self.route:
             string += str(Direction.dir_to_int(direction))
             string += ";\n"
+
         return string
 
     def __eq__(self, other):

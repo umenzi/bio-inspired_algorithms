@@ -54,13 +54,13 @@ class Environment:
     the environments class for each algorithm, as some use pheromones, etc.
     """
 
-    def __init__(self, width, height, grid, start=None, end=None):
-        self.width = width
-        self.height = height
+    def __init__(self, width: int, height: int, grid, start=None, end=None):
+        self.width: int = width
+        self.height: int = height
         self.grid = grid
 
-        self.start = start
-        self.end = end
+        self.start: Coordinate = start
+        self.end: Coordinate = end
 
     def get_width(self):
         """
@@ -115,8 +115,8 @@ class Environment:
         grid_copy = self.grid.copy()
 
         # Set start and end positions to special values
-        grid_copy[self.start[0]][self.start[1]] = 2
-        grid_copy[self.end[0]][self.end[1]] = 3
+        grid_copy[self.start.x][self.start.y] = 2
+        grid_copy[self.end.x][self.end.y] = 3
 
         # If a route is provided, draw the route on the grid
         if route is not None:
@@ -198,4 +198,6 @@ class Environment:
                         grid[x, y] = 0
 
         print("Finished preparing the board")
-        return Environment(width, height, grid, start_pos, end_pos)
+
+        return Environment(width, height, grid, Coordinate(start_pos[0], start_pos[1]),
+                           Coordinate(end_pos[0], end_pos[1]))

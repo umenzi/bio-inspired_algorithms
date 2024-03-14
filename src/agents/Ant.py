@@ -1,7 +1,9 @@
 import random
 
 from agents.Agent import Agent
+from environments.ACOEnvironment import ACOEnvironment
 from helpers.Direction import Direction
+from helpers.PathSpecification import PathSpecification
 from helpers.Route import Route
 import numpy as np
 
@@ -11,7 +13,8 @@ class Ant(Agent):
     agents representing the ant functionality
     """
 
-    def __init__(self, environment, path_specification, convergence_iter, trail):
+    def __init__(self, environment: ACOEnvironment, path_specification: PathSpecification,
+                 convergence_iter: int, trail: float):
         super().__init__(environment, path_specification)
 
         self.rand = random

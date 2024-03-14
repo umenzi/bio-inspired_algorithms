@@ -6,7 +6,7 @@ class SurroundingPheromone:
     Class containing the pheromone information around a certain point in the environment.
     """
 
-    def __init__(self, north, east, south, west):
+    def __init__(self, north: int, east: int, south: int, west: int):
         """
         Creates a surrounding pheromone object.
 
@@ -16,11 +16,11 @@ class SurroundingPheromone:
         :param west: the amount of pheromone in the west.
         """
 
-        self.north = north
-        self.south = south
-        self.west = west
-        self.east = east
-        self.total_surrounding_pheromone = east + north + south + west
+        self.north: int = north
+        self.south: int = south
+        self.west: int = west
+        self.east: int = east
+        self.total_surrounding_pheromone: int = east + north + south + west
 
     def get_total_surrounding_pheromone(self):
         """
@@ -31,7 +31,7 @@ class SurroundingPheromone:
 
         return self.total_surrounding_pheromone
 
-    def get(self, direction):
+    def get(self, direction: Direction):
         """
         Get a specific pheromone level.
         

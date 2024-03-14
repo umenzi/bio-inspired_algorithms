@@ -6,15 +6,15 @@ class Coordinate:
     Class representing a coordinate.
     """
 
-    def __init__(self, x, y):
+    def __init__(self, x: int, y: int):
         """
         Constructs a new coordinate object.
         :param x: the x coordinate
         :param y: the y coordinate
         """
 
-        self.x = x
-        self.y = y
+        self.x: int = x
+        self.y: int = y
 
     def add_coordinate(self, other):
         """
