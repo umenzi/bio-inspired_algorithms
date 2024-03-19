@@ -12,8 +12,8 @@ class ACOEnvironment(Environment):
     well as the starting and end coordinates.
     """
 
-    def __init__(self, width: int, height: int, grid, start=None, end=None):
-        super().__init__(width, height, grid, start, end)
+    def __init__(self, width: int, height: int, obstacles=None, obstacle_radius=0, start=None, end=None):
+        super().__init__(width, height, obstacles, obstacle_radius, start, end)
 
         # Specific to ACO, we use pheromones to guide the ants.
         self.pheromones = None
@@ -28,7 +28,7 @@ class ACOEnvironment(Environment):
 
         for i in range(self.width):
             for j in range(self.height):
-                if self.grid[i][j] == 0:
+                if self.distance_to_closest_obstacle(Coordinate(i, j)) == 0:
                     self.pheromones[i][j] = 0
 
     def reset(self):
@@ -101,15 +101,14 @@ class ACOEnvironment(Environment):
         :return: pheromone at point
         """
 
-        if not self.in_bounds(pos):
+        if self.distance_to_closest_obstacle(pos) < 0:
             return 0
         return self.pheromones[pos.x][pos.y]
 
     @staticmethod
-    def create_environment(width: int, height: int, start_pos: (int, int), end_pos: (int, int),
-                           obstacle_radius: int, amount_of_obstacles: float):
-        environment = Environment.create_environment(width, height, start_pos,
-                                                     end_pos, obstacle_radius, amount_of_obstacles)
+    def create_environment(width: int, height: int, obstacle_radius: int = 0, obstacle_percentage: float = 0,
+                           start_pos: Coordinate = None, end_pos: Coordinate = None,):
+        environment: Environment = Environment.create_environment(width, height, obstacle_radius, obstacle_percentage,
+                                                                  start_pos, end_pos)
 
-        return ACOEnvironment(environment.width, environment.height,
-                              environment.grid, environment.start, environment.end)
+        return ACOEnvironment(environment.width, environment.height, environment.obstacles, environment.obstacle_radius)
