@@ -28,7 +28,7 @@ class ACOEnvironment(Environment):
 
         for i in range(self.width):
             for j in range(self.height):
-                if self.distance_to_closest_obstacle(Coordinate(i, j)) == 0:
+                if self.distance_to_closest_obstacle(Coordinate(i, j)) < 0:
                     self.pheromones[i][j] = 0
 
     def reset(self):
@@ -73,20 +73,25 @@ class ACOEnvironment(Environment):
             for j in range(self.height):
                 self.pheromones[i][j] *= (1 - rho)
 
-    def get_surrounding_pheromone(self, position: Coordinate):
+    def get_surrounding_pheromone(self, position: Coordinate, step_size: int = 1):
         """
         Returns the amount of pheromones on the neighbouring positions (N/S/E/W).
 
+        :param step_size: how many cells do we move in each direction.
         :param position: The position to check the neighbours of.
         :return: The pheromones of the neighbouring positions.
         """
 
-        up = self.get_pheromone(Coordinate(position.x, position.y - 1))
-        down = self.get_pheromone(Coordinate(position.x, position.y + 1))
-        right = self.get_pheromone(Coordinate(position.x + 1, position.y))
-        left = self.get_pheromone(Coordinate(position.x - 1, position.y))
+        up = self.get_pheromone(Coordinate(position.x, position.y + step_size))
+        up_right = self.get_pheromone(Coordinate(position.x + step_size, position.y + step_size))
+        right = self.get_pheromone(Coordinate(position.x + step_size, position.y))
+        down_right = self.get_pheromone(Coordinate(position.x + step_size, position.y - step_size))
+        down = self.get_pheromone(Coordinate(position.x, position.y - step_size))
+        down_left = self.get_pheromone(Coordinate(position.x - step_size, position.y - step_size))
+        left = self.get_pheromone(Coordinate(position.x - step_size, position.y))
+        up_left = self.get_pheromone(Coordinate(position.x - step_size, position.y + step_size))
 
-        return SurroundingPheromone(up, right, down, left)
+        return SurroundingPheromone(up, up_right, right, down_right, down, down_left, left, up_left)
 
     def get_pheromone(self, pos: Coordinate):
         """
@@ -102,8 +107,8 @@ class ACOEnvironment(Environment):
 
     @staticmethod
     def create_environment(width: int, height: int, obstacle_radius: int = 0, obstacle_percentage: float = 0,
-                           start_pos: Coordinate = None, end_pos: Coordinate = None,):
+                           start_pos: Coordinate = None, end_pos: Coordinate = None):
         environment: Environment = Environment.create_environment(width, height, obstacle_radius, obstacle_percentage,
                                                                   start_pos, end_pos)
 
-        return ACOEnvironment(environment.width, environment.height, environment.obstacles, environment.obstacle_radius)
+        return ACOEnvironment(environment.width, environment.height, environment.obstacles, environment.obstacle_radius, environment.start, environment.end)

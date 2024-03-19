@@ -8,32 +8,34 @@ class Coordinate:
     Class representing a coordinate.
     """
 
-    def __init__(self, x: int, y: int):
+    def __init__(self, x: float, y: float):
         """
         Constructs a new coordinate object.
         :param x: the x coordinate
         :param y: the y coordinate
         """
 
-        self.x: int = x
-        self.y: int = y
+        self.x: float = x
+        self.y: float = y
 
-    def add_coordinate(self, other):
+    def add_coordinate(self, other, step_size: float = 1):
         """
         Add a coordinate to this coordinate
+        :param step_size: how many cells to move in the direction
         :param other: the other coordinate to be added
         :return: the result coordinate (a new instance)
         """
 
-        return Coordinate(self.x + other.x, self.y + other.y)
+        return Coordinate(self.x + other.x * step_size, self.y + other.y * step_size)
 
-    def add_direction(self, direction):
+    def add_direction(self, direction, step_size: float = 1):
         """
         Move in a direction from this coordinate
+        :param step_size: how many cells to move in the direction
         :param direction: of unit move
         :return: the new coordinate
         """
-        return self.add_coordinate(self.dir_to_coordinate_delta(direction))
+        return self.add_coordinate(self.dir_to_coordinate_delta(direction), step_size)
 
     def subtract_coordinate(self, other):
         """
@@ -117,11 +119,19 @@ class Coordinate:
 
         # All directions in a vector
         # Creates a map with a direction linked to its (direction) vector.
-        vector = {Direction.right: Coordinate(1, 0), Direction.left: Coordinate(-1, 0),
-                  Direction.up: Coordinate(0, -1), Direction.down: Coordinate(0, 1),
-                  Direction.up_right: Coordinate(1, -1), Direction.up_left: Coordinate(-1, -1),
-                  Direction.down_right: Coordinate(1, 1), Direction.down_left: Coordinate(-1, 1)}
+        vector = self.get_all_directions()
+
         return vector[direction]
+
+    def get_all_directions(self):
+        """
+        :return: all directions: up, up_right, right, down_right, down, down_left, left, up_left,
+        """
+
+        return {Direction.up: Coordinate(0, 1), Direction.up_right: Coordinate(1, 1),
+                Direction.right: Coordinate(1, 0), Direction.down_right: Coordinate(1, -1),
+                Direction.down: Coordinate(0, -1), Direction.down_left: Coordinate(-1, -1),
+                Direction.left: Coordinate(-1, 0), Direction.up_left: Coordinate(-1, 1)}
 
     def move_in_direction(self, angle, distance):
         """

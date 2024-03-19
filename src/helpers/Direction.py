@@ -3,20 +3,19 @@ import enum
 
 class Direction(enum.Enum):
     """
-    Enum representing the directions an agent can take.
+    Enum representing the directions an agent can take, in clockwise order.
 
     Note that the Coordinate object can also move in any direction given an angle,
     but this includes the most common directions you could use.
     """
-    right = 0
-    up = 1
-    left = 2
-    down = 3
-    # diagonals
-    up_right = 4
-    up_left = 5
-    down_right = 6
-    down_left = 7
+    up = 0
+    up_right = 1
+    right = 2
+    down_right = 3
+    down = 4
+    down_left = 5
+    left = 6
+    up_left = 7
 
     @classmethod
     def dir_to_int(cls, direction):

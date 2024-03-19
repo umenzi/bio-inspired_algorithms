@@ -185,7 +185,7 @@ class Environment:
 
         print("Finished preparing the environment")
 
-        return Environment(width, height, obstacles, obstacle_radius)
+        return Environment(width, height, obstacles, obstacle_radius, start_pos, end_pos)
 
 
 ############################################################################################################

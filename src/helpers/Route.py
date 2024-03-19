@@ -82,8 +82,8 @@ class Route:
 
         string = ""
 
-        for direction in self.route:
-            string += str(Direction.dir_to_int(direction))
+        for coordinate in self.route:
+            string += str(coordinate)
             string += ";\n"
 
         return string

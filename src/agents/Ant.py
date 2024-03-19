@@ -14,12 +14,13 @@ class Ant(Agent):
     """
 
     def __init__(self, environment: ACOEnvironment, path_specification: PathSpecification,
-                 convergence_iter: int, trail: float):
+                 convergence_iter: int, trail: float, step_size: int = 1):
         super().__init__(environment, path_specification)
 
         self.rand = random
         self.convergence_iter = convergence_iter
         self.trail = trail
+        self.step_size = step_size
 
     def find_route(self):
         """
@@ -48,15 +49,15 @@ class Ant(Agent):
             if self.convergence_iter == 0:
                 return None
 
-            surrounding_pheromone = self.environment.get_surrounding_pheromone(self.current_position)
+            surrounding_pheromone = self.environment.get_surrounding_pheromone(self.current_position, self.step_size)
             tot_pheromones = surrounding_pheromone.get_total_surrounding_pheromone()
 
-            # Cumulative probabilities
+            # Cumulative probabilities for each direction
             # Here probability = p^k_{ij}(t), where \eta_{ij}=1 (as the next direction is always one step away).
-            probabilities = [0.0 for _ in range(4)]
+            probabilities = [0.0 for _ in range(7)]
 
-            for i in range(4):
-                if not self.current_position.add_direction(Direction(i)) in visited:
+            for i in range(7):
+                if not self.current_position.add_direction(Direction(i), self.step_size) in visited:
                     # Since distance = 1 always, no need for visibility parameter
                     probabilities[i] = surrounding_pheromone.get(Direction(i)) ** self.trail
                 else:
@@ -81,7 +82,7 @@ class Ant(Agent):
 
             # Get index of selected direction following probability distribution
             choice = np.random.choice(range(len(probabilities)), p=probabilities)
-            self.current_position = self.current_position.add_direction(Direction(choice))
+            self.current_position = self.current_position.add_direction(Direction(choice), self.step_size)
             route.add(self.current_position)
 
             visited.append(self.current_position)
