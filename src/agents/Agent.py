@@ -1,4 +1,3 @@
-from environments.Environment import Environment
 from helpers.Coordinate import Coordinate
 from helpers.PathSpecification import PathSpecification
 
@@ -8,7 +7,7 @@ class Agent:
     Simple agent class, from where all the specific agents are implemented.
     """
 
-    def __init__(self, environment, path_specification: PathSpecification):
+    def __init__(self, environment, path_specification: PathSpecification, step_size: int = 1):
         """
         Constructor for the agent taking an environments and PathSpecification.
 
@@ -19,3 +18,4 @@ class Agent:
         self.start: Coordinate = path_specification.get_start()
         self.end: Coordinate = path_specification.get_end()
         self.current_position: Coordinate = self.start
+        self.step_size = step_size

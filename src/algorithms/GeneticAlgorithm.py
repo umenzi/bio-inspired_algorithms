@@ -175,7 +175,7 @@ class GeneticAlgorithm:
         We create a child chromosome by picking a random splitting point for the parent chromosomes, and taking
         the left part of the first parent and the right part of the second parent.
         We also perform “Order Crossover”: we make sure that the child chromosome has all the product locations,
-        and doesn’t contain any duplicate location.
+        and does not contain any duplicate location.
         The child inherits from both parents, which may form a better solution than the parents alone.
         :param parent1: One of the parent chromosomes.
         :param parent2: The other parent chromosome.

@@ -1,5 +1,4 @@
 from helpers.Coordinate import Coordinate
-from helpers.Direction import Direction
 
 
 class Route:

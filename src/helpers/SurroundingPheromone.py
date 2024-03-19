@@ -6,7 +6,8 @@ class SurroundingPheromone:
     Class containing the pheromone information around a certain point in the environment.
     """
 
-    def __init__(self, up: int, up_right: int, right: int, down_right: int, down: int, down_left: int, left: int, up_left: int):
+    def __init__(self, up: int, up_right: int, right: int, down_right: int, down: int,
+                 down_left: int, left: int, up_left: int):
         """
         Creates a surrounding pheromone object.
 

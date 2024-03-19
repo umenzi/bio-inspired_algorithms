@@ -16,8 +16,9 @@ class AntColonyOptimization:
     other problems such as resource allocation, machine learning, and data mining.
     """
 
-    def __init__(self, environment: ACOEnvironment, ants_per_gen: int, generations: int, q: int, evaporation: float,
-                 convergence_iter: int, no_change_iter: int, trail: float, sigma_elite: int, step_size: int = 1, num_processes: int = 6):
+    def __init__(self, environment: ACOEnvironment, ants_per_gen: int, generations: int,
+                 q: int, evaporation: float, convergence_iter: int, no_change_iter: int, trail: float,
+                 sigma_elite: int, step_size: int = 1, num_processes: int = 6):
         self.environment: ACOEnvironment = environment
         self.ants_per_gen: int = ants_per_gen
         self.generations: int = generations

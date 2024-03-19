@@ -2,7 +2,6 @@ import math
 import random
 
 import matplotlib.pyplot as plt
-import numpy as np
 
 from helpers.Coordinate import Coordinate
 from helpers.Route import Route
@@ -23,8 +22,10 @@ class Environment:
         :param height: of the environment
         :param obstacles: of the environment (each of type Coordinate)
         :param obstacle_radius: the radius of the obstacles (represented as circles)
-        :param start: of the agents (we assume all agents start at the same position). Default: (0, 0)
-        :param end: of the agents (we assume all agents aim to arrive to the same position). Default: (width - 1, height - 1)
+        :param start: of the agents (we assume all agents start at the same position).
+        Default: (0, 0)
+        :param end: of the agents (we assume all agents aim to arrive to the same position).
+        Default: (width - 1, height - 1)
         """
 
         self.width: int = width
@@ -145,8 +146,10 @@ class Environment:
         :param height: of the environment
         :param obstacle_radius: radius of the obstacles, which have a circular shape
         :param obstacle_percentage: how many obstacles (in percentage, from 0 to 1) to generate
-        :param start_pos: of the agents (we assume all agents start at the same position). Default: (0, 0)
-        :param end_pos: of the agents (we assume all agents aim to arrive to the same position). Default: (width - 1, height - 1)
+        :param start_pos: of the agents (we assume all agents start at the same position).
+        Default: (0, 0)
+        :param end_pos: of the agents (we assume all agents aim to arrive to the same position).
+        Default: (width - 1, height - 1)
         :return: an environment object with the specified parameters
         """
 

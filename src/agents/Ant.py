@@ -15,12 +15,11 @@ class Ant(Agent):
 
     def __init__(self, environment: ACOEnvironment, path_specification: PathSpecification,
                  convergence_iter: int, trail: float, step_size: int = 1):
-        super().__init__(environment, path_specification)
+        super().__init__(environment, path_specification, step_size)
 
         self.rand = random
         self.convergence_iter = convergence_iter
         self.trail = trail
-        self.step_size = step_size
 
     def find_route(self):
         """

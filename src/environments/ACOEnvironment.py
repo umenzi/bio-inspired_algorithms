@@ -3,7 +3,6 @@ from environments.Environment import Environment
 from helpers.Coordinate import Coordinate
 from helpers.Route import Route
 from helpers.SurroundingPheromone import SurroundingPheromone
-from helpers.Direction import Direction
 
 
 class ACOEnvironment(Environment):
@@ -111,4 +110,5 @@ class ACOEnvironment(Environment):
         environment: Environment = Environment.create_environment(width, height, obstacle_radius, obstacle_percentage,
                                                                   start_pos, end_pos)
 
-        return ACOEnvironment(environment.width, environment.height, environment.obstacles, environment.obstacle_radius, environment.start, environment.end)
+        return ACOEnvironment(environment.width, environment.height, environment.obstacles,
+                              environment.obstacle_radius, environment.start, environment.end)
