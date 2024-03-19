@@ -6,21 +6,21 @@ class SurroundingPheromone:
     Class containing the pheromone information around a certain point in the environment.
     """
 
-    def __init__(self, north: int, east: int, south: int, west: int):
+    def __init__(self, up: int, right: int, down: int, left: int):
         """
         Creates a surrounding pheromone object.
 
-        :param north: the amount of pheromone in the north.
-        :param east: the amount of pheromone in the east.
-        :param south: the amount of pheromone in the south.
-        :param west: the amount of pheromone in the west.
+        :param up: the amount of pheromone upwards.
+        :param right: the amount of pheromone to the right.
+        :param down: the amount of pheromone downwards.
+        :param left: the amount of pheromone to the left.
         """
 
-        self.north: int = north
-        self.south: int = south
-        self.west: int = west
-        self.east: int = east
-        self.total_surrounding_pheromone: int = east + north + south + west
+        self.up: int = up
+        self.down: int = down
+        self.left: int = left
+        self.right: int = right
+        self.total_surrounding_pheromone: int = right + up + down + left
 
     def get_total_surrounding_pheromone(self):
         """
@@ -39,13 +39,13 @@ class SurroundingPheromone:
         :return: Pheromone of dir.
         """
 
-        if direction == Direction.north:
-            return self.north
-        elif direction == Direction.east:
-            return self.east
-        elif direction == Direction.west:
-            return self.west
-        elif direction == Direction.south:
-            return self.south
+        if direction == Direction.up:
+            return self.up
+        elif direction == Direction.right:
+            return self.right
+        elif direction == Direction.left:
+            return self.left
+        elif direction == Direction.down:
+            return self.down
         else:
             return None

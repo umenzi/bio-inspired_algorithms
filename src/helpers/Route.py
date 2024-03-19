@@ -14,17 +14,17 @@ class Route:
         :param start: the starting coordinate.
         """
 
-        self.route = []
+        self.route = [start]
         self.start: Coordinate = start
 
-    def add(self, direction: Direction):
+    def add(self, coordinate: Coordinate):
         """
         After taking a step we add the direction we moved in.
 
-        :param direction: the direction we moved in.
+        :param coordinate: the coordinate we moved in.
         """
 
-        self.route.append(direction)
+        self.route.append(coordinate)
         return
 
     def size(self):

@@ -127,10 +127,12 @@ class Environment:
         if route is not None:
             x_values = [point.x for point in route.get_route()]
             y_values = [point.y for point in route.get_route()]
-            ax.plot(x_values, y_values, 'b-')  # Route in blue
+            ax.plot(x_values, y_values, 'b-', linewidth=2)  # Route in blue, with a bigger width to make it more visible
 
-        ax.set_xlim(0, self.width)
-        ax.set_ylim(0, self.height)
+        # Adjust axes limits
+        ax.set_xlim(-1, self.width)
+        ax.set_ylim(-1, self.height)
+
         plt.show()
 
     @staticmethod

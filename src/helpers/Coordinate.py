@@ -1,3 +1,5 @@
+import math
+
 from helpers.Direction import Direction
 
 
@@ -113,9 +115,24 @@ class Coordinate:
         :return:
         """
 
-        # all directions in a vector
+        # All directions in a vector
         # Creates a map with a direction linked to its (direction) vector.
-        vector = {Direction.east: Coordinate(1, 0), Direction.west: Coordinate(-1, 0),
-                  Direction.north: Coordinate(0, -1),
-                  Direction.south: Coordinate(0, 1)}
+        vector = {Direction.right: Coordinate(1, 0), Direction.left: Coordinate(-1, 0),
+                  Direction.up: Coordinate(0, -1), Direction.down: Coordinate(0, 1),
+                  Direction.up_right: Coordinate(1, -1), Direction.up_left: Coordinate(-1, -1),
+                  Direction.down_right: Coordinate(1, 1), Direction.down_left: Coordinate(-1, 1)}
         return vector[direction]
+
+    def move_in_direction(self, angle, distance):
+        """
+        Move in a direction from this coordinate
+
+        :param angle: angle of movement in radians
+        :param distance: distance of movement
+        :return: the new coordinate
+        """
+
+        dx = distance * math.cos(angle)
+        dy = distance * math.sin(angle)
+
+        return Coordinate(self.x + dx, self.y + dy)

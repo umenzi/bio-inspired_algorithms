@@ -47,13 +47,8 @@ class ACOEnvironment(Environment):
         if route.size() != 0:
             amount = q / route.size()
 
-        cur = route.get_start()
-
-        self.pheromones[cur.x][cur.y] += amount
-
-        for direction in route.get_route():
-            cur = cur.add_direction(Direction(direction))
-            self.pheromones[cur.x][cur.y] += amount
+        for coordinate in route.get_route():
+            self.pheromones[coordinate.x][coordinate.y] += amount
 
     def add_pheromone_routes(self, routes, q: int):
         """
@@ -86,12 +81,12 @@ class ACOEnvironment(Environment):
         :return: The pheromones of the neighbouring positions.
         """
 
-        north = self.get_pheromone(Coordinate(position.x, position.y - 1))
-        south = self.get_pheromone(Coordinate(position.x, position.y + 1))
-        east = self.get_pheromone(Coordinate(position.x + 1, position.y))
-        west = self.get_pheromone(Coordinate(position.x - 1, position.y))
+        up = self.get_pheromone(Coordinate(position.x, position.y - 1))
+        down = self.get_pheromone(Coordinate(position.x, position.y + 1))
+        right = self.get_pheromone(Coordinate(position.x + 1, position.y))
+        left = self.get_pheromone(Coordinate(position.x - 1, position.y))
 
-        return SurroundingPheromone(north, east, south, west)
+        return SurroundingPheromone(up, right, down, left)
 
     def get_pheromone(self, pos: Coordinate):
         """

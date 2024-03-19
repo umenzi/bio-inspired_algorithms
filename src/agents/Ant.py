@@ -82,7 +82,7 @@ class Ant(Agent):
             # Get index of selected direction following probability distribution
             choice = np.random.choice(range(len(probabilities)), p=probabilities)
             self.current_position = self.current_position.add_direction(Direction(choice))
-            route.add(Direction(choice))
+            route.add(self.current_position)
 
             visited.append(self.current_position)
 
