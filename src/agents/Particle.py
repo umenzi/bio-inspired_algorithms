@@ -50,7 +50,7 @@ class Particle(Agent):
             self.velocity_x = new_vel_x
             self.velocity_y = new_vel_y
             self.current_position = new_pos
-            if self.evaluate_fitness(new_pos) > self.evaluate_fitness(personal_best_pos):
+            if self.evaluate_fitness(new_pos) < self.evaluate_fitness(personal_best_pos):
                 self.personal_best_pos = new_pos
 
         return self.personal_best_pos  # return the personal best to compete for global best
@@ -63,15 +63,16 @@ class Particle(Agent):
         # for now, we assign weight 1 to the goal distance and 0 to the obstacle distance
         # effectively only the goal distance is considered
         weight_goal: float = 1.0
-        weight_obstacle: float = 0.0
+        weight_obstacle: float = 300.0
 
-        # since we need to maximize one and minimize the other, we invert distance to goal, so we can maximize it
-        # avoid 0 division goal because we reached the goal:
-        if distance_to_goal == 0:
-            return float('inf')
-        return weight_goal * (1 / distance_to_goal) + weight_obstacle * distance_to_obstacle
+        # since we need to maximize one and minimize the other, we invert distance to obstacle, so we can minimize it
+
+        return weight_goal * distance_to_goal + weight_obstacle * (1 / distance_to_obstacle)
 
     def position_out_of_bounds(self, pos: Coordinate):
         # check if within bounds OR colliding with an obstacle
-        return self.environment.distance_to_closest_obstacle(pos) < 0 or not pos.x_between(0, self.environment.width + 1) \
-            or not pos.y_between(0, self.environment.height + 1)
+        xout: bool = not pos.x_between(0, self.environment.width)
+        yout: bool = not pos.y_between(0, self.environment.height)
+        obs: bool = self.environment.distance_to_closest_obstacle(pos) < 0
+
+        return xout or yout or obs

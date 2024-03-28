@@ -23,19 +23,18 @@ class ParticleSwarmOptimization:
             self.particles.append(particle)
 
     def run(self):
-        while self.global_best_pos != self.path_specification.end:
-            # two loops over particles, first update the global best then the particles
+        for _ in range(100):
+            # two loops over particles, first find the global best then the particles
             for particle in self.particles:
-                if ((particle.evaluate_fitness(particle.personal_best_pos) >
-                        particle.evaluate_fitness(self.global_best_pos))
-                        and not particle.position_out_of_bounds(particle.personal_best_pos)):
-                    self.global_best_pos = particle.personal_best_pos
+                if ((particle.evaluate_fitness(particle.current_position) <
+                     particle.evaluate_fitness(self.global_best_pos))
+                        and not particle.position_out_of_bounds(particle.current_position)):
+                    self.global_best_pos = particle.current_position
 
             for particle in self.particles:
                 particle.update_particle(self.global_best_pos, particle.personal_best_pos)
 
             # Add global best to route
             self.route.add(self.global_best_pos)
-            print(self.global_best_pos)
 
         return self.route
