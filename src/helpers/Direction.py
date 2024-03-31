@@ -7,6 +7,7 @@ class Direction(enum.Enum):
 
     Note that the Coordinate object can also move in any direction given an angle,
     but this includes the most common directions you could use.
+    Recommended when you want to move in a grid or graph-like structure.
     """
     up = 0
     up_right = 1
