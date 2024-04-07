@@ -4,6 +4,7 @@ import random
 import matplotlib.pyplot as plt
 
 from helpers.Coordinate import Coordinate
+from helpers.Obstacle import Obstacle
 from helpers.Route import Route
 
 
@@ -15,13 +16,12 @@ class Environment:
     the environments class for each algorithm, as some use pheromones, etc.
     """
 
-    def __init__(self, width: int, height: int, obstacles=None, obstacle_radius=0, start=None, end=None):
+    def __init__(self, width: int, height: int, obstacles=None, start=None, end=None):
         """
         Constructor for the environments class.
         :param width: of the environment
         :param height: of the environment
-        :param obstacles: of the environment (each of type Coordinate)
-        :param obstacle_radius: the radius of the obstacles (represented as circles)
+        :param obstacles: of the environment (each of type Obstacle)
         :param start: of the agents (we assume all agents start at the same position).
         Default: (0, 0)
         :param end: of the agents (we assume all agents aim to arrive to the same position).
@@ -36,8 +36,6 @@ class Environment:
             self.obstacles = []
         else:
             self.obstacles = obstacles
-
-        self.obstacle_radius = obstacle_radius
 
         # We set the initial and final position of our environment (by default, the opposite corners)
         if start is None:
@@ -91,8 +89,8 @@ class Environment:
 
         # Check whether the given position is not colliding with an obstacle
         for obstacle in self.obstacles:
-            minimum_distance = distance(obstacle, position)
-            if minimum_distance <= self.obstacle_radius:
+            minimum_distance = distance(obstacle.center, position)
+            if minimum_distance <= obstacle.radius:
                 return -1.0
 
         return minimum_distance
@@ -108,7 +106,7 @@ class Environment:
         string += f"End: {self.end.x}, {self.end.y}\n"
         string += "Obstacles:\n"
         for obstacle in self.obstacles:
-            string += f"  Center: {obstacle.x}, {obstacle.y}, Radius: {self.obstacle_radius}\n"
+            string += f"  Center: {obstacle.center}, Radius: {obstacle.radius}\n"
         return string
 
     def visualize_environment(self, route: Route = None):
@@ -117,7 +115,7 @@ class Environment:
         # Draw obstacles as circles
         for obstacle in self.obstacles:
             # We need to convert the obstacle to a (int, int) because matplotlib requires it is subscriptable
-            circle = plt.Circle((obstacle.x, obstacle.y), self.obstacle_radius, color='darkgrey')
+            circle = plt.Circle((obstacle.center.x, obstacle.center.y), obstacle.radius, color='darkgrey')
             ax.add_artist(circle)
 
         # Draw start and end points as squares
@@ -137,15 +135,15 @@ class Environment:
         plt.show()
 
     @staticmethod
-    def create_environment(width: int, height: int, obstacle_radius: int, obstacle_percentage: float,
+    def create_environment(width: int, height: int, obstacle_values,
                            start_pos: Coordinate = None, end_pos: Coordinate = None):
         """
         Method that creates an environment with obstacles.
 
         :param width: of the environment
         :param height: of the environment
-        :param obstacle_radius: radius of the obstacles, which have a circular shape
-        :param obstacle_percentage: how many obstacles (in percentage, from 0 to 1) to generate
+        :param obstacle_values: a list of obstacle types we want, as a pair of ints (x, y)
+        where x is the radius and y is the frequency (in %)
         :param start_pos: of the agents (we assume all agents start at the same position).
         Default: (0, 0)
         :param end_pos: of the agents (we assume all agents aim to arrive to the same position).
@@ -156,7 +154,7 @@ class Environment:
         # First, we check that creating the environment is possible
 
         # Whether the variables given are not negative, and that the start and end positions are both given or not given
-        if width < 0 or height < 0 or obstacle_radius < 0 or obstacle_percentage < 0.0:
+        if width < 0 or height < 0:
             raise ValueError("The given variables are not valid: make sure that width, "
                              "height, obstacle_radius, and obstacle_percentage are all non-negative")
         if (start_pos is None) != (end_pos is None):
@@ -173,22 +171,24 @@ class Environment:
         # We now set the legal area for the obstacles
         left, right, top, bottom = compute_inner_space(width, height)
 
-        amount_of_obstacles = get_amount_of_obstacles(height, width, obstacle_percentage, obstacle_radius)
-
         obstacles = []
 
-        minimum_obstacle_distance = obstacle_radius * 2
+        for obstacle in obstacle_values:
+            amount_of_obstacles = get_amount_of_obstacles(height, width, obstacle[1], obstacle[0])
 
-        # Generate obstacles
-        while len(obstacles) < amount_of_obstacles:
-            obstacle_pos = Coordinate(random.randint(left, right), random.randint(bottom, top))
+            current_amount = 0
 
-            if all(distance(obstacle_pos, obstacle) >= minimum_obstacle_distance for obstacle in obstacles):
-                obstacles.append(obstacle_pos)
+            # Generate obstacles
+            while current_amount < amount_of_obstacles:
+                obstacle_pos = Coordinate(random.randint(left, right), random.randint(bottom, top))
+
+                if all(distance(obstacle_pos, obstacle2.center) >= (obstacle[0] + obstacle2.radius) for obstacle2 in obstacles):
+                    obstacles.append(Obstacle(obstacle_pos, obstacle[0]))
+                    current_amount += 1
 
         print("Finished preparing the environment")
 
-        return Environment(width, height, obstacles, obstacle_radius, start_pos, end_pos)
+        return Environment(width, height, obstacles, start_pos, end_pos)
 
 
 ############################################################################################################

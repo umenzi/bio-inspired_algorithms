@@ -11,8 +11,8 @@ class ACOEnvironment(Environment):
     well as the starting and end coordinates.
     """
 
-    def __init__(self, width: int, height: int, obstacles=None, obstacle_radius=0, start=None, end=None):
-        super().__init__(width, height, obstacles, obstacle_radius, start, end)
+    def __init__(self, width: int, height: int, obstacles=None, start=None, end=None):
+        super().__init__(width, height, obstacles, start, end)
 
         # Specific to ACO, we use pheromones to guide the ants.
         self.pheromones = None
@@ -105,10 +105,10 @@ class ACOEnvironment(Environment):
         return self.pheromones[pos.x][pos.y]
 
     @staticmethod
-    def create_environment(width: int, height: int, obstacle_radius: int = 0, obstacle_percentage: float = 0,
+    def create_environment(width: int, height: int, obstacles=None,
                            start_pos: Coordinate = None, end_pos: Coordinate = None):
-        environment: Environment = Environment.create_environment(width, height, obstacle_radius, obstacle_percentage,
+        environment: Environment = Environment.create_environment(width, height, obstacles,
                                                                   start_pos, end_pos)
 
         return ACOEnvironment(environment.width, environment.height, environment.obstacles,
-                              environment.obstacle_radius, environment.start, environment.end)
+                              environment.start, environment.end)
