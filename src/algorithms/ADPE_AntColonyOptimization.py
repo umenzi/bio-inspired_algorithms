@@ -7,7 +7,7 @@ from multiprocessing import Pool
 from helpers.Route import Route
 
 
-class AntColonyOptimization:
+class ADPE_AntColonyOptimization:
     """
     Ant Colony Optimization is an algorithm based on the exploratory behaviour of ants to find food.
 
@@ -22,7 +22,7 @@ class AntColonyOptimization:
 
     def __init__(self, environment: ACOEnvironment, ants_per_gen: int, generations: int,
                  q: int, evaporation: float, convergence_iter: int, no_change_iter: int, trail: float,
-                 step_size: int = 1, num_processes: int = 6):
+                 sigma_elite: int, default_elitist_probability: float = 0.5, step_size: int = 1, num_processes: int = 6):
         self.environment: ACOEnvironment = environment
         self.ants_per_gen: int = ants_per_gen
         self.generations: int = generations
@@ -33,7 +33,8 @@ class AntColonyOptimization:
         self.trail: float = trail
         self.step_size: int = step_size
         self.num_processes: int = num_processes
-        # self.sigma_elite: int = sigma_elite
+        self.sigma_elite: int = sigma_elite
+        self.default_elitist_probability: float = default_elitist_probability
         self.maximum_global_tour_length = None
 
     def find_shortest_route(self, path_specification, print_progress=True):
@@ -104,7 +105,17 @@ class AntColonyOptimization:
 
             self.environment.add_pheromone_routes(routes, self.q)
 
-            # Basic ACO: No elitism
+            # Performance Improvement: Adding the pheromones of the best path using elitism
+            # We use Probabilistic Elitism, where we add the pheromones of the best path with a certain probability
+            # This reduces the chance of the algorithm getting stuck in a
+            # local minimum with respect to the original elitist algorithm
+            p: float = 1 - best_route.size() / self.maximum_global_tour_length
+            if p < 0:
+                p = self.default_elitist_probability
+
+            if random.random() < p:
+                for i in range(self.sigma_elite):
+                    self.environment.add_pheromone_route(best_route, self.q)
 
             if (generation + 1) == 1 or (generation + 1) == 3 or (generation + 1) == 5 \
                     or (generation + 1) == 9 or (generation + 1) % 10 == 0:
