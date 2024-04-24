@@ -105,10 +105,15 @@ class ACOEnvironment(Environment):
         return self.pheromones[pos.x][pos.y]
 
     @staticmethod
-    def create_environment(width: int, height: int, obstacles=None,
+    def create_new_environment(width: int, height: int, obstacles=None,
                            start_pos: Coordinate = None, end_pos: Coordinate = None):
         environment: Environment = Environment.create_environment(width, height, obstacles,
                                                                   start_pos, end_pos)
 
+        return ACOEnvironment(environment.width, environment.height, environment.obstacles,
+                              environment.start, environment.end)
+
+    @staticmethod
+    def create_from_environment(environment: Environment):
         return ACOEnvironment(environment.width, environment.height, environment.obstacles,
                               environment.start, environment.end)
