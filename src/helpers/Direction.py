@@ -22,7 +22,8 @@ class Direction(enum.Enum):
     def dir_to_int(cls, direction):
         """
         Direction to an int.
-        :param direction: the direction.
-        :return: an integer from 0-7.
+
+        :param direction: The direction.
+        :return: An integer from 0-7.
         """
         return direction.value

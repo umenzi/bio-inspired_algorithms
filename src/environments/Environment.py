@@ -10,21 +10,22 @@ from helpers.Route import Route
 
 class Environment:
     """
-    environments Class, used by all the Bio-Inspired AI algorithms.
+    The Environment Class, used by all the Bio-Inspired AI algorithms.
 
     Note that we may want to use specific implementations of
-    the environments class for each algorithm, as some use pheromones, etc.
+    the environment class for each algorithm, as some use pheromones, etc.
     """
 
     def __init__(self, width: int, height: int, obstacles=None, start=None, end=None):
         """
-        Constructor for the environments class.
-        :param width: of the environment
-        :param height: of the environment
-        :param obstacles: of the environment (each of type Obstacle)
-        :param start: of the agents (we assume all agents start at the same position).
+        Constructor for the environment class.
+
+        :param width: Of the environment
+        :param height: Of the environment
+        :param obstacles: Of the environment (each of type Obstacle)
+        :param start: Of the agents (we assume all agents start at the same position).
         Default: (0, 0)
-        :param end: of the agents (we assume all agents aim to arrive to the same position).
+        :param end: Of the agents (we assume all agents aim to arrive to the same position).
         Default: (width - 1, height - 1)
         """
 
@@ -51,7 +52,8 @@ class Environment:
     def get_width(self):
         """
         Width getter
-        :return: width of the environment
+
+        :return: Width of the environment
         """
 
         return self.width
@@ -59,7 +61,8 @@ class Environment:
     def get_height(self):
         """
         Height getter
-        :return: height of the environment
+
+        :return: Height of the environment
         """
 
         return self.height
@@ -74,7 +77,7 @@ class Environment:
     def distance_to_closest_obstacle(self, position) -> float:
         """
         Returns the smallest distance to an obstacle, or -1 if it is the position is not valid (out of bounds or
-        colliding with an obstacle)
+        colliding with an obstacle.)
 
         :param position: The position to be checked
         :return: Whether the position is in the current environment
@@ -101,6 +104,7 @@ class Environment:
 
         :return: String representation
         """
+
         string = f"Environment of size {self.width}x{self.height}\n"
         string += f"Start: {self.start.x}, {self.start.y}\n"
         string += f"End: {self.end.x}, {self.end.y}\n"
@@ -110,6 +114,13 @@ class Environment:
         return string
 
     def visualize_environment(self, route: Route = None):
+        """
+        Visualize how the route looks like in the environment.
+
+        :param route: To be visualized
+        :return: The visualization of the environment
+        """
+
         fig, ax = plt.subplots()
 
         # Draw obstacles as circles
@@ -140,15 +151,15 @@ class Environment:
         """
         Method that creates an environment with obstacles.
 
-        :param width: of the environment
-        :param height: of the environment
-        :param obstacle_values: a list of obstacle types we want, as a pair of ints (x, y)
+        :param width: Of the environment
+        :param height: Of the environment
+        :param obstacle_values: A list of obstacle types we want, as a pair of ints (x, y)
         where x is the radius and y is the frequency (in %)
-        :param start_pos: of the agents (we assume all agents start at the same position).
+        :param start_pos: Of the agents (we assume all agents start at the same position).
         Default: (0, 0)
-        :param end_pos: of the agents (we assume all agents aim to arrive to the same position).
+        :param end_pos: Of the agents (we assume all agents aim to arrive to the same position).
         Default: (width - 1, height - 1)
-        :return: an environment object with the specified parameters
+        :return: An environment object with the specified parameters
         """
 
         # First, we check that creating the environment is possible
@@ -197,10 +208,11 @@ class Environment:
 
 def compute_inner_space(width, height):
     """
-    Obstacles can only be generated in the central 80% of the grid
-    :param width: of the environment
-    :param height: of the environment
-    :return: the four boundaries of the inner space (where obstacles can be placed)
+    Obstacles can only be generated in the central 80% of the grid.
+
+    :param width: Of the environment
+    :param height: Of the environment
+    :return: The four boundaries of the inner space (where obstacles can be placed)
     """
 
     width_margin = width * 0.1
@@ -216,12 +228,13 @@ def compute_inner_space(width, height):
 
 def get_amount_of_obstacles(height, width, obstacle_percentage, obstacle_radius):
     """
-    Calculate the amount of obstacles to be placed in the environment
-    :param height: of the environment
-    :param width: of the environment
-    :param obstacle_percentage: how many obstacles (in percentage, from 0 to 1) to generate
-    :param obstacle_radius: the radius of the obstacles
-    :return: how many obstacles to place in the environment
+    Calculate the number of obstacles to be placed in the environment
+
+    :param height: Of the environment
+    :param width: Of the environment
+    :param obstacle_percentage: How many obstacles (in percentage, from zero to one) to generate
+    :param obstacle_radius: The radius of the obstacles
+    :return: How many obstacles to place in the environment
     """
 
     # Area occupied by one obstacle
@@ -242,9 +255,10 @@ def get_amount_of_obstacles(height, width, obstacle_percentage, obstacle_radius)
 def distance(pair1: Coordinate, pair2: Coordinate):
     """
     Euclidean distance between two pairs of coordinates
-    :param pair1: a pair of coordinates
-    :param pair2: a pair of coordinates
-    :return: the distance between the two pairs
+
+    :param pair1: A pair of coordinates
+    :param pair2: A pair of coordinates
+    :return: The distance between the two pairs
     """
 
     return math.sqrt((pair1.x - pair2.x) ** 2 + (pair1.y - pair2.y) ** 2)

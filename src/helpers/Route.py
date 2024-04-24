@@ -10,7 +10,7 @@ class Route:
         """
         Route takes a starting coordinate to initialize.
 
-        :param start: the starting coordinate.
+        :param start: The starting coordinate.
         """
 
         self.route = [start]
@@ -18,9 +18,9 @@ class Route:
 
     def add(self, coordinate: Coordinate):
         """
-        After taking a step we add the direction we moved in.
+        After taking a step, we add the direction we moved in.
 
-        :param coordinate: the coordinate we moved in.
+        :param coordinate: The coordinate we moved in.
         """
 
         self.route.append(coordinate)
@@ -30,7 +30,7 @@ class Route:
         """
         Returns the length of the route
 
-        :return: length of the route
+        :return: Length of the route
         """
 
         return len(self.route)
@@ -39,7 +39,7 @@ class Route:
         """
         Getter for the list of directions.
 
-        :return: list of directions
+        :return: List of directions
         """
 
         return self.route
@@ -48,7 +48,7 @@ class Route:
         """
         Getter for the starting coordinate.
 
-        :return: the starting coordinate
+        :return: The starting coordinate
         """
 
         return self.start
@@ -57,8 +57,8 @@ class Route:
         """
         Function that checks whether a route is smaller than another route.
 
-        :param other: other the other route
-        :return: whether the route is shorter
+        :param other: Other the other route
+        :return: Whether the route is shorter
         """
 
         return self.size() < other.size()
@@ -67,7 +67,7 @@ class Route:
         """
         Take a step back in the route and return the last direction.
 
-        :return: the last direction
+        :return: The last direction
         """
 
         return self.route.pop()
@@ -76,7 +76,7 @@ class Route:
         """
         Build a string representing the route as the format specified in the manual.
 
-        :return: string with the specified format of a route
+        :return: String with the specified format of a route
         """
 
         string = ""
@@ -91,8 +91,8 @@ class Route:
         """
         Equals method for route
 
-        :param other: the other route
-        :return: whether they are equal
+        :param other: The other route
+        :return: Whether they are equal
         """
 
         return self.start == other.start and self.route == other.route
@@ -101,7 +101,7 @@ class Route:
         """
         Method that implements the specified format for writing a route to a file.
 
-        :param file_path: path to route file.
+        :param file_path: Path to route file.
         :raises: IOError if the file path is invalid.
         """
 

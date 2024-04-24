@@ -37,8 +37,8 @@ class ACOEnvironment(Environment):
         """
         Update the pheromones along a certain route according to a certain Q.
 
-        :param route: The route of the ants
-        :param q: Normalization factor for amount of dropped pheromone
+        :param route: The route of the ant
+        :param q: Normalization factor for the amount of dropped pheromone
         :return:
         """
         amount = 0
@@ -74,9 +74,9 @@ class ACOEnvironment(Environment):
 
     def get_surrounding_pheromone(self, position: Coordinate, step_size: int = 1):
         """
-        Returns the amount of pheromones on the neighbouring positions (N/S/E/W).
+        Returns the number of pheromones on the neighbouring positions (N/S/E/W).
 
-        :param step_size: how many cells do we move in each direction.
+        :param step_size: How many cells do we move in each direction.
         :param position: The position to check the neighbours of.
         :return: The pheromones of the neighbouring positions.
         """
@@ -107,6 +107,9 @@ class ACOEnvironment(Environment):
     @staticmethod
     def create_new_environment(width: int, height: int, obstacles=None,
                            start_pos: Coordinate = None, end_pos: Coordinate = None):
+        """
+        :return: a new ACO environment with the given parameters.
+        """
         environment: Environment = Environment.create_environment(width, height, obstacles,
                                                                   start_pos, end_pos)
 
@@ -115,5 +118,8 @@ class ACOEnvironment(Environment):
 
     @staticmethod
     def create_from_environment(environment: Environment):
+        """
+        :return: a new ACO environment from the given environment.
+        """
         return ACOEnvironment(environment.width, environment.height, environment.obstacles,
                               environment.start, environment.end)

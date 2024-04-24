@@ -11,13 +11,13 @@ class SurroundingPheromone:
         """
         Creates a surrounding pheromone object.
 
-        :param up: the pheromone level in the up direction
-        :param up_right: the pheromone level in the up-right direction
-        :param right: the pheromone level in the right direction
-        :param down_right: the pheromone level in the down-right direction
-        :param down: the pheromone level in the down direction
-        :param down_left: the pheromone level in the down-left direction
-        :param left: the pheromone level in the left direction
+        :param up: The pheromone level in the up direction
+        :param up_right: The pheromone level in the up-right direction
+        :param right: The pheromone level in the right direction
+        :param down_right: The pheromone level in the down-right direction
+        :param down: The pheromone level in the down direction
+        :param down_left: The pheromone level in the down-left direction
+        :param left: The pheromone level in the left direction
         """
 
         self.up: int = up
@@ -34,7 +34,7 @@ class SurroundingPheromone:
         """
         Get the total amount of surrounding pheromone.
 
-        :return: total surrounding pheromone
+        :return: Total surrounding pheromone
         """
 
         return self.total_surrounding_pheromone

@@ -33,22 +33,22 @@ class AntColonyOptimization:
         self.trail: float = trail
         self.step_size: int = step_size
         self.num_processes: int = num_processes
-        # self.sigma_elite: int = sigma_elite
         self.maximum_global_tour_length = None
 
     def find_shortest_route(self, path_specification, print_progress=True):
         """
         The ACO algorithm to find the shortest route across generations.
 
-        We first reset the pheromones (i.e. initialize them), then we create a specified
+        We first reset the pheromones (i.e., initialize them), then we create a specified
         number of ants for each generation and keep track of the shortest path found amongst all of them.
-        After each generation, we evaporate the existing pheromones by the chosen evaporation parameter
-        ρ, and we add the pheromones of each of the routes found by the ants. This process is shown in
-        the following pseudocode block.
 
-        :param path_specification:
-        :param print_progress: whether we print the result of each generation
-        :return:
+        After each generation, we evaporate the existing pheromones by the chosen evaporation parameter
+        ρ, and we add the pheromones of each the route found by the ants.
+        This process is shown in the following pseudocode block.
+
+        :param path_specification: The start and end coordinates of the path
+        :param print_progress: Whether we print the result of each generation
+        :return: The best route found
         """
 
         self.environment.reset()

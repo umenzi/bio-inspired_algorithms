@@ -11,13 +11,12 @@ class ADPE_AntColonyOptimization:
     """
     Ant Colony Optimization is an algorithm based on the exploratory behaviour of ants to find food.
 
-    Agents in the algorithm act as ants and deposit pheromone on the paths they travel, which will be updated based
-    on the quality of said path. In our case, this relates directly to the length of the route. Through this process,
-    agents search for the optimal path through a graph or network.
-
-    The ACO algorithm is put in use in optimization problems where the search space is large, and many solutions are
-    possible, but not all are optimal. This includes the Travelling Salesman Problem. It has also been used to solve
-    other problems such as resource allocation, machine learning, and data mining.
+    This is Adaptive Dynamic Probabilistic Elitism (ADPE) Ant Colony Optimization, an extension of the original ACO
+    algorithm.
+    It introduces Probabilistic Elitism, where the pheromones of the best path are added with a certain
+    probability.
+    This reduces the chance of the algorithm getting stuck in a local minimum with respect to the original
+    algorithm.
     """
 
     def __init__(self, environment: ACOEnvironment, ants_per_gen: int, generations: int,
@@ -41,15 +40,15 @@ class ADPE_AntColonyOptimization:
         """
         The ACO algorithm to find the shortest route across generations.
 
-        We first reset the pheromones (i.e. initialize them), then we create a specified
+        We first reset the pheromones (i.e., initialize them), then we create a specified
         number of ants for each generation and keep track of the shortest path found amongst all of them.
         After each generation, we evaporate the existing pheromones by the chosen evaporation parameter
-        ρ, and we add the pheromones of each of the routes found by the ants. This process is shown in
-        the following pseudocode block.
+        ρ, and we add the pheromones of each route found by the ants.
+        This process is shown in the following pseudocode block.
 
-        :param path_specification:
-        :param print_progress: whether we print the result of each generation
-        :return:
+        :param path_specification: The start and end coordinates of the path
+        :param print_progress: Whether we print the result of each generation
+        :return: The best route found
         """
 
         self.environment.reset()

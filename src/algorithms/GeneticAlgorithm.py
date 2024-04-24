@@ -11,9 +11,10 @@ class GeneticAlgorithm:
     def __init__(self, generations, pop_size, mutation_prob=0.005, crossover_prob=0.7):
         """
         Constructs a new 'genetic algorithm' object.
-        :param generations: the amount of generations.
-        :param pop_size: the population size.
-        :param mutation_prob: the probability of mutation.
+
+        :param generations: The number of generations.
+        :param pop_size: The population size.
+        :param mutation_prob: The probability of mutation.
         """
 
         self.generations = generations
@@ -24,8 +25,9 @@ class GeneticAlgorithm:
     def solve_tsp(self, tsp_data):
         """
         This method should solve the TSP.
-        :param tsp_data: the TSP data.
-        :return: the optimized product sequence.
+
+        :param tsp_data: The TSP data.
+        :return: The optimized product sequence.
         """
 
         # STEP 1: Creating the initial population.
@@ -46,7 +48,7 @@ class GeneticAlgorithm:
                 fitness_list.append(self.assess_fitness(population, tsp_data))
                 pop_fit_list.append((population, fitness_list[-1]))
 
-            # Obtain fitness ratio
+            # Obtain the fitness ratio
             fitness_ratio_list = self.fitness_ratio(population_set, fitness_list)
 
             # Update if necessary the best solution found so far
@@ -58,19 +60,16 @@ class GeneticAlgorithm:
             # STEP 3: Generate the new population after selecting, doing crossover and mutation.
             population_set = self.select(population_set, fitness_ratio_list)
 
-        # print("Path length is:", 1 / best_solution[1])
-
         return best_solution[0]
 
     def generate(self, products, pop_size):
         """
-        This method generates an initial population.
-        Each gene will represent the product number.
+        This method generates an initial population. Each gene will represent the product number.
         Chromosomes describe the order of products which the robot will visit.
 
-        :param products: the items in the store.
-        :param pop_size: the size of the population.
-        :return: the generated set of sequences to get all items.
+        :param products: The items in the store.
+        :param pop_size: The size of the population.
+        :return: The generated set of sequences to get all items.
         """
 
         population = []
@@ -79,7 +78,6 @@ class GeneticAlgorithm:
             chromosome = list(range(len(products)))
             random.shuffle(chromosome)
             population.append(chromosome)
-            # population.append(random.sample(products, len(products)))
 
         return population
 
@@ -88,10 +86,6 @@ class GeneticAlgorithm:
         Calculates the fitness function, which is 1 / d_path, where d_path is the total length
         of the path travelled by the robot to get all the products in the specified order of
         the permuted chromosome.
-
-        :param product_order:
-        :param tsp_data:
-        :return:
         """
 
         distance_matrix = tsp_data.get_distances()
@@ -136,9 +130,10 @@ class GeneticAlgorithm:
         individuals that provide more optimal solutions. This is why we only pass 2 elements of the elite set.
 
         Implementation based on https://www.baeldung.com/cs/elitism-in-evolutionary-algorithms
+
         :param population: the population from which we obtain the next generation.
-        :param fitness_ratio_list:
-        :return:
+        :param fitness_ratio_list: the fitness ratio of the population.
+        :return: the next generation.
         """
 
         # Pick the elite set
@@ -165,7 +160,7 @@ class GeneticAlgorithm:
             if random.random() <= self.mutation_prob:
                 self.mutate(child)
 
-            # Add child to next generation
+            # Add child to the next generation
             new_pop.append(child)
 
         return new_pop
@@ -174,9 +169,12 @@ class GeneticAlgorithm:
         """
         We create a child chromosome by picking a random splitting point for the parent chromosomes, and taking
         the left part of the first parent and the right part of the second parent.
+
         We also perform “Order Crossover”: we make sure that the child chromosome has all the product locations,
         and does not contain any duplicate location.
+
         The child inherits from both parents, which may form a better solution than the parents alone.
+
         :param parent1: One of the parent chromosomes.
         :param parent2: The other parent chromosome.
         :return: A child chromosome.
@@ -227,7 +225,7 @@ class GeneticAlgorithm:
         Since our problem is an ordering problem, we use Swap Mutation. We select two positions of
         the chromosome at random, and we swap them.
 
-        Mutation is very important, because it prevents the algorithm to get stuck in a local optimum.
+        Mutation is very important because it prevents the algorithm from getting stuck in a local optimum.
         We only apply mutation with a low probability (we chose 0.01), because we want to avoid the
         chromosomes being inconsistent.
 
