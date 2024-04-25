@@ -17,30 +17,34 @@ class FireflyAlgorithm:
     are drawn from a Lévy distribution. This allows the fireflies to explore the search space more effectively.
     """
 
-    def __init__(self, environment: Environment, path_specification: PathSpecification, population_size: int,
-                 randomness_strength: int = 1.0, attractiveness: int = 1.0, absorption: int = 0.01, max_iter: int = 100,
+    def __init__(self, environment: Environment, path_specification: PathSpecification, population_size, alpha_init=1.0,
+                 alpha_end=0.1, gamma_init=0.1, gamma_end: int = 5, beta=1, max_iter=100,
                  lower_bound: int = -5, upper_bound: int = 5, dimension: int = 2):
+        assert gamma_init < gamma_end, "Gamma init must be smaller than gamma end"
+        assert alpha_init > alpha_end, "Alpha init must be greater than alpha end"
+
         self.environment = environment
         self.path_specification = path_specification
         self.route = Route(path_specification.start)
 
         self.max_iter = max_iter
         self.best = None
-        self.fireflies = [Firefly(randomness_strength, attractiveness, absorption,
+        self.fireflies = [Firefly(alpha_init, alpha_end, beta, gamma_init, gamma_end,
                                   upper_bound, lower_bound, dimension)
                           for _ in range(population_size)]
 
     def run(self, function):
-        # TODO: Function needs to be removed
+        # TODO: (Objective) function needs to be removed
         if not self.best or (self.fireflies[0].intensity > self.best):
             self.best = self.fireflies[0].intensity
 
-        for _ in range(self.max_iter):
+        for w in range(self.max_iter):
             for i in range(len(self.fireflies)):
                 for j in range(len(self.fireflies)):
                     # If i is brighter than j, move j towards i
                     if self.fireflies[i].intensity >= self.fireflies[j].intensity:
-                        self.fireflies[j].move_towards(self.fireflies[i].position)
+                        adaptive = w / self.max_iter
+                        self.fireflies[j].move_towards(self.fireflies[i].position, adaptive)
                         self.fireflies[j].update_intensity(function)
 
                         self.best = min(self.fireflies[i].intensity, self.best)

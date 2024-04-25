@@ -24,8 +24,8 @@ There are multiple components in this project, each with its own default impleme
 The following are the algorithms currently implemented:
 - Particle Swarm Optimization (PSO).
 - Ant Colony Optimization (ACO).
-- Adaptive dynamic probabilistic elitist ACO (ADPE ACO) [1].
-- Firefly Algorithm.
+- Adaptive dynamic probabilistic elitist ACO (ADPE ACO) [2].
+- Adaptive Firefly Algorithm (AFFA) [1].
 - Gaussian Firefly Algorithm.
 
 When adding new algorithms, make sure to extend each of these classes with your own implementation.
@@ -36,5 +36,9 @@ A detailed example of several Bio-Inspired algorithms is given in `Main.ipynb`.
 
 # References
 
-[1] Chatterjee, A., Kim, E. & Reza, H. Adaptive Dynamic Probabilistic Elitist Ant Colony Optimization in Traveling 
+[1] Chang Liu, Yuxin Zhao, Feng Gao, Liqiang Liu, "Three-Dimensional Path Planning Method for Autonomous Underwater
+Vehicle Based on Modified Firefly Algorithm", Mathematical Problems in Engineering, vol. 2015, Article ID 561394, 
+10 pages, 2015. https://doi.org/10.1155/2015/561394
+
+[2] Chatterjee, A., Kim, E. & Reza, H. Adaptive Dynamic Probabilistic Elitist Ant Colony Optimization in Traveling 
 Salesman Problem. SN COMPUT. SCI. 1, 95 (2020). https://doi.org/10.1007/s42979-020-0083-z

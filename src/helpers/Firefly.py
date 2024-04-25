@@ -7,10 +7,12 @@ class Firefly:
     """
     Firefly is a class that represents a firefly in the Firefly Algorithm.
     """
-    def __init__(self, alpha, beta, gamma, upper_boundary, lower_boundary, function_dimension):
-        self.alpha = alpha
+    def __init__(self, alpha_init, alpha_end, beta, gamma_init, gamma_end, upper_boundary, lower_boundary, function_dimension):
+        self.alpha_init = alpha_init
+        self.alpha_end = alpha_end
         self.beta = beta
-        self.gamma = gamma
+        self.gamma_init = gamma_init
+        self.gamma_end = gamma_end
         self.__intensity = None
         self.lower_boundary = lower_boundary
         self.upper_boundary = upper_boundary
@@ -29,14 +31,22 @@ class Firefly:
     def position(self, value):
         self.__position = value
 
-    def move_towards(self, better_position):
+    def move_towards(self, better_position, adaptive):
+        # TODO: Currently meant for 1D, needs to be updated for 2D
+        # Adaptive parameters
+        alpha = self.alpha_init + adaptive * (self.alpha_end - self.alpha_init)
+        gamma = self.gamma_init + adaptive * (self.gamma_end - self.gamma_init)
+
         # We compute the Euclidean distance between the particles
         distance = np.linalg.norm(self.__position - better_position)
-        attractiveness = self.beta * np.exp(-self.gamma * (distance ** 2))
-        random_number = random.uniform(0, 1)
+        attractiveness = self.beta * np.exp(-gamma * (distance ** 2))
+        random_number = random.uniform(0, 1) - 0.5
 
         self.__position += (attractiveness * (better_position - self.__position) +
-                            self.alpha * (random_number - 0.5))
+                            alpha * random_number)
+        # Try also (from http://dx.doi.org/10.1155/2015/561394):
+        # self.__position += (attractiveness * (better_position - self.__position) +
+        #                     alpha * distance * random_number)
         self.check_boundaries()
 
     def random_walk(self, area):
