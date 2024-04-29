@@ -1,5 +1,5 @@
 from environments.Environment import Environment
-from helpers.Firefly import Firefly
+from agents.Firefly import Firefly
 from helpers.PathSpecification import PathSpecification
 from helpers.Route import Route
 
@@ -19,7 +19,7 @@ class FireflyAlgorithm:
 
     def __init__(self, environment: Environment, path_specification: PathSpecification, population_size, alpha_init=1.0,
                  alpha_end=0.1, gamma_init=0.1, gamma_end: int = 5, beta=1, max_iter=100,
-                 lower_bound: int = -5, upper_bound: int = 5, dimension: int = 2):
+                 lower_bound: int = -5, upper_bound: int = 5):
         assert gamma_init < gamma_end, "Gamma init must be smaller than gamma end"
         assert alpha_init > alpha_end, "Alpha init must be greater than alpha end"
 
@@ -30,7 +30,7 @@ class FireflyAlgorithm:
         self.max_iter = max_iter
         self.best = None
         self.fireflies = [Firefly(alpha_init, alpha_end, beta, gamma_init, gamma_end,
-                                  upper_bound, lower_bound, dimension)
+                                  upper_bound, lower_bound)
                           for _ in range(population_size)]
 
     def run(self, function):
