@@ -91,7 +91,7 @@ class Firefly(Agent):
         Update the intensity of the firefly.
         """
 
-        # We want to maximize the brightness, and minimize the objective function (distance to the goal)
+        # We want to maximize the brightness, and minimize the objective function (distance to the goal).
         # Hence, we negate the objective function to get the intensity
         self.__intensity = -1 * self.objective_function()
 

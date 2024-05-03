@@ -19,9 +19,9 @@ class ADPE_AntColonyOptimization:
     algorithm.
     """
 
-    def __init__(self, environment: ACOEnvironment, ants_per_gen: int, generations: int,
-                 q: int, evaporation: float, convergence_iter: int, no_change_iter: int, trail: float,
-                 sigma_elite: int, default_elitist_probability: float = 0.5, step_size: int = 1, num_processes: int = 6):
+    def __init__(self, environment: ACOEnvironment, ants_per_gen: int, generations: int, q: int,
+                 evaporation: float, convergence_iter: int, no_change_iter: int, trail: float, sigma_elite: int,
+                 default_elitist_probability: float = 0.5, step_size: int = 1, num_processes: int = 6):
         self.environment: ACOEnvironment = environment
         self.ants_per_gen: int = ants_per_gen
         self.generations: int = generations
@@ -40,7 +40,7 @@ class ADPE_AntColonyOptimization:
         """
         The ACO algorithm to find the shortest route across generations.
 
-        We first reset the pheromones (i.e., initialize them), then we create a specified
+        We first reset the pheromones (i.e. initialize them), then we create a specified
         number of ants for each generation and keep track of the shortest path found amongst all of them.
         After each generation, we evaporate the existing pheromones by the chosen evaporation parameter
         ρ, and we add the pheromones of each route found by the ants.

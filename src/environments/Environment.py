@@ -125,7 +125,7 @@ class Environment:
 
         # Draw obstacles as circles
         for obstacle in self.obstacles:
-            # We need to convert the obstacle to a (int, int) because matplotlib requires it is subscriptable
+            # We need to convert the obstacle to an (int, int) because matplotlib requires it is subscriptable
             circle = plt.Circle((obstacle.center.x, obstacle.center.y), obstacle.radius, color='darkgrey')
             ax.add_artist(circle)
 
@@ -193,7 +193,8 @@ class Environment:
             while current_amount < amount_of_obstacles:
                 obstacle_pos = Coordinate(random.randint(left, right), random.randint(bottom, top))
 
-                if all(distance(obstacle_pos, obstacle2.center) >= (obstacle[0] + obstacle2.radius) for obstacle2 in obstacles):
+                if all(distance(obstacle_pos, obstacle2.center) >=
+                       (obstacle[0] + obstacle2.radius) for obstacle2 in obstacles):
                     obstacles.append(Obstacle(obstacle_pos, obstacle[0]))
                     current_amount += 1
 
@@ -243,7 +244,7 @@ def get_amount_of_obstacles(height, width, obstacle_percentage, obstacle_radius)
     # Calculate how many cells we can place obstacles in (80% of the real total amount)
     total_cells = width * height * 0.8
 
-    # Hence, the max amount of possible obstacles is:
+    # Hence, the max number of possible obstacles is:
     max_amount = total_cells / obstacle_area
 
     # Apply the percentage

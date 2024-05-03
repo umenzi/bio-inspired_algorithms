@@ -1,9 +1,7 @@
-import random
-
-from environments import ACOEnvironment
-from agents.Ant import Ant
 from multiprocessing import Pool
 
+from agents.Ant import Ant
+from environments import ACOEnvironment
 from helpers.Route import Route
 
 
@@ -39,7 +37,7 @@ class AntColonyOptimization:
         """
         The ACO algorithm to find the shortest route across generations.
 
-        We first reset the pheromones (i.e., initialize them), then we create a specified
+        We first reset the pheromones (i.e. initialize them), then we create a specified
         number of ants for each generation and keep track of the shortest path found amongst all of them.
 
         After each generation, we evaporate the existing pheromones by the chosen evaporation parameter

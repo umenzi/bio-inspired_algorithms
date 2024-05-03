@@ -106,7 +106,7 @@ class ACOEnvironment(Environment):
 
     @staticmethod
     def create_new_environment(width: int, height: int, obstacles=None,
-                           start_pos: Coordinate = None, end_pos: Coordinate = None):
+                               start_pos: Coordinate = None, end_pos: Coordinate = None):
         """
         :return: a new ACO environment with the given parameters.
         """
