@@ -2,6 +2,8 @@ import math
 import random
 import numpy as np
 
+from helpers.Levy import levy_flight
+
 from agents.Agent import Agent
 from environments.Environment import Environment
 from helpers.Coordinate import Coordinate
@@ -52,17 +54,12 @@ class Firefly(Agent):
         attractiveness = self.beta * np.exp(-gamma * (distance ** 2))
         # The following can be changed with another distribution
         # random_number = random.uniform(0, 1) - 0.5
-        random_number = self.levy_flight(beta=1.5, size=2)
+        random_number = levy_flight(beta=1.5, size=2)
 
         new_pos_x = self.current_position.x + (attractiveness * (better_position.x - self.current_position.x) +
                                                alpha * random_number[0])
         new_pos_y = self.current_position.y + (attractiveness * (better_position.y - self.current_position.y) +
                                                alpha * random_number[1])
-        # Try also (from http://dx.doi.org/10.1155/2015/561394):
-        # new_pos_x = self.current_position.x + (attractiveness * (better_position.x - self.current_position.x) +
-        #                                        alpha * distance * random_number[0])
-        # new_pos_y = self.current_position.y + (attractiveness * (better_position.y - self.current_position.y) +
-        #                                        alpha * distance * random_number[1])
 
         if not self.position_out_of_bounds(Coordinate(new_pos_x, new_pos_y), obstacle_distance=self.obstacle_distance):
             self.current_position = Coordinate(new_pos_x, new_pos_y)
@@ -70,36 +67,10 @@ class Firefly(Agent):
 
         return self.current_position  # return the current position
 
-    def random_move(self):
-        # levy_steps = self.levy_flight(beta=1.5, size=2)
-        # levy_vel_x: float = levy_steps[0]
-        # levy_vel_y: float = levy_steps[1]
-        # levy_pos = Coordinate(self.current_position.x + levy_vel_x,
-        #                       self.current_position.y + levy_vel_y)
-        #
-        # # Take the direction that is allowed
-        # if self.environment.distance_to_closest_obstacle(levy_pos) > 0:
-        #     if 0 <= levy_pos.x <= self.environment.width - 1:
-        #         self.current_position.x = levy_pos.x
-        #     if 0 <= levy_pos.y <= self.environment.height - 1:
-        #         self.current_position.y = levy_pos.y
-        #     self.route.add(self.current_position)
-        area = 0.1
+    def random_move(self, area):
         self.current_position = Coordinate(
             random.uniform(self.current_position.x - area, self.current_position.x + area),
             random.uniform(self.current_position.y - area, self.current_position.y + area))
-
-    def levy_flight(self, beta: float, size: int):
-        # Draw samples from a uniform distribution
-        u = np.random.uniform(0.01, 1, size=size)
-
-        # Calculate the corresponding step lengths
-        steps = u ** (-1 / beta)
-
-        # Make sure the steps are between -2 and 2 (obstacle radius)
-        steps = np.clip(steps, -2, 2)
-
-        return steps
 
     def reach_end(self):
         """
@@ -130,7 +101,5 @@ class Firefly(Agent):
         # For now, we assign weight 1 to the goal distance and 0 to the obstacle distance
         # effectively only the goal distance is considered
         weight_goal: float = 1.0
-        # The fireflies go to the 'brighter' firefly, i.e. the one with the lowest distance and the largest distance to
-        # obstacles.
 
         return weight_goal * distance_to_goal

@@ -32,7 +32,7 @@ class Ant(Agent):
         route = Route(self.start)
 
         # By marking visited cells, in the environment and setting their pheromone level to 0, upcoming agents will
-        # never choose said cells as a path to explore. This allows to avoid infinite loops where agents go over a
+        # never choose said cells as a path to explore. This allows avoiding infinite loops where agents go over a
         # path infinite times, ending up in positions they have already visited
         visited = [self.start]
 
@@ -79,7 +79,7 @@ class Ant(Agent):
             for i in range(len(probabilities)):
                 probabilities[i] /= total
 
-            # Get index of selected direction following probability distribution
+            # Get index of a selected direction following probability distribution
             choice = np.random.choice(range(len(probabilities)), p=probabilities)
             self.current_position = self.current_position.add_direction(Direction(choice), self.step_size)
             route.add(self.current_position)

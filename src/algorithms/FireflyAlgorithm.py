@@ -52,8 +52,7 @@ class FireflyAlgorithm:
                     # If we don't move for 10 fireflies, make a Lévy flight
                     elif const_count >= 10:
                         const_count = 0
-                        self.fireflies[i].random_move()
-                        # self.fireflies[i].levy_move(0.1)
+                        self.fireflies[i].random_move(0.1)
                     else:
                         const_count += 1
 

@@ -1,6 +1,7 @@
 import math
 import random
-import numpy as np
+
+from helpers.Levy import levy_flight
 
 from helpers.Route import Route
 from helpers.Coordinate import Coordinate
@@ -55,14 +56,14 @@ class ParticleSwarmOptimization:
             for particle in self.particles:
                 particle.update_particle(self.global_best_pos, particle.personal_best_pos, c1, c2, _, self.max_iter)
 
-            # Check if the particles have fallen into poor areas and get them out with Levy flight
+            # Check if the particles have fallen into poor areas and get them out with Lévy flight
             # The particles are judged to have fallen into a poor area if they do not change in more than 10 iters
             if self.levy_best == self.global_best_pos:
                 const_count += 1
                 if const_count > 10:
                     # Do Lévy flight
                     for particle in self.particles:
-                        levy_steps = self.levy_flight(beta=1.5, size=2)
+                        levy_steps = levy_flight(beta=1.5, size=2)
                         levy_vel_x = levy_steps[0]
                         levy_vel_y = levy_steps[1]
                         levy_pos = Coordinate(particle.current_position.x + levy_vel_x,
@@ -118,15 +119,3 @@ class ParticleSwarmOptimization:
 
         # Since we need to maximize one and minimize the other, we invert distance to an obstacle, so we can minimize it
         return weight_goal * distance_to_goal + weight_obstacle * (1 / distance_to_obstacle)
-
-    def levy_flight(self, beta: float, size: int):
-        # Draw samples from a uniform distribution
-        u = np.random.uniform(0.01, 1, size=size)
-
-        # Calculate the corresponding step lengths
-        steps = u ** (-1 / beta)
-
-        # Make sure the steps are between -2 and 2 (obstacle radius)
-        steps = np.clip(steps, -2, 2)
-
-        return steps
