@@ -19,3 +19,16 @@ class Agent:
         self.end: Coordinate = path_specification.get_end()
         self.current_position: Coordinate = self.start
         self.step_size = step_size
+
+    def position_out_of_bounds(self, pos: Coordinate, obstacle_distance: int = 0):
+        """
+        Check if within bounds OR colliding with an obstacle
+        :param obstacle_distance: the required minimum distance to an obstacle
+        :param pos: the position to check
+        :return: True if out of bounds or colliding with an obstacle, False otherwise
+        """
+        xout: bool = not (0 <= pos.x <= self.environment.width - 1)
+        yout: bool = not (0 <= pos.y <= self.environment.height - 1)
+        obs: bool = self.environment.distance_to_closest_obstacle(pos) < obstacle_distance
+
+        return xout or yout or obs

@@ -59,11 +59,3 @@ class Particle(Agent):
             self.current_position = new_pos
 
         return self.current_position  # return the current position
-
-    def position_out_of_bounds(self, pos: Coordinate):
-        # check if within bounds OR colliding with an obstacle
-        xout: bool = not (0 <= pos.x <= self.environment.width - 1)
-        yout: bool = not (0 <= pos.y <= self.environment.height - 1)
-        obs: bool = self.environment.distance_to_closest_obstacle(pos) < 0
-
-        return xout or yout or obs

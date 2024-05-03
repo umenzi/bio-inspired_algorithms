@@ -19,7 +19,7 @@ class FireflyAlgorithm:
 
     def __init__(self, environment: Environment, path_specification: PathSpecification, population_size, alpha_init=1.0,
                  alpha_end=0.1, gamma_init=0.1, gamma_end: int = 5, beta=1, max_iter=100,
-                 lower_bound: int = -5, upper_bound: int = 5):
+                 step_size: int = 1, obstacle_distance: int = 0):
         assert gamma_init < gamma_end, "Gamma init must be smaller than gamma end"
         assert alpha_init > alpha_end, "Alpha init must be greater than alpha end"
 
@@ -29,24 +29,42 @@ class FireflyAlgorithm:
 
         self.max_iter = max_iter
         self.best = None
-        self.fireflies = [Firefly(alpha_init, alpha_end, beta, gamma_init, gamma_end,
-                                  upper_bound, lower_bound)
-                          for _ in range(population_size)]
+        self.fireflies = [
+            Firefly(environment, path_specification, alpha_init, alpha_end, beta, gamma_init,
+                    gamma_end, step_size, obstacle_distance) for _ in range(population_size)]
 
-    def run(self, function):
-        # TODO: (Objective) function needs to be removed
+    def run(self):
         if not self.best or (self.fireflies[0].intensity > self.best):
             self.best = self.fireflies[0].intensity
 
         for w in range(self.max_iter):
             for i in range(len(self.fireflies)):
+                const_count = 0
                 for j in range(len(self.fireflies)):
-                    # If i is brighter than j, move j towards i
-                    if self.fireflies[i].intensity >= self.fireflies[j].intensity:
+                    # We want to maximize the brightness (i.e. minimize distance to goal)
+                    if self.fireflies[i].intensity < self.fireflies[j].intensity:
                         adaptive = w / self.max_iter
-                        self.fireflies[j].move_towards(self.fireflies[i].position, adaptive)
-                        self.fireflies[j].update_intensity(function)
+                        self.fireflies[i].move_towards(self.fireflies[j].position, adaptive)
 
-                        self.best = min(self.fireflies[i].intensity, self.best)
+                        # We double-check because of uncertainty in the fireflies' movement
+                        if self.fireflies[i].intensity < self.fireflies[j].intensity:
+                            self.fireflies[i].move_towards(self.fireflies[j].position, adaptive)
+                    # If we don't move for 10 fireflies, make a Lévy flight
+                    elif const_count >= 10:
+                        const_count = 0
+                        self.fireflies[i].random_move()
+                        # self.fireflies[i].levy_move(0.1)
+                    else:
+                        const_count += 1
 
-        return self.best
+                    self.fireflies[i].update_intensity()
+
+                    if self.fireflies[i].reach_end():
+                        return self.fireflies[i].route
+
+                    if self.fireflies[i].intensity > self.best:
+                        self.best = self.fireflies[i].intensity
+                        self.route = self.fireflies[i].route
+                        print(self.fireflies[i].intensity)
+
+        return self.route

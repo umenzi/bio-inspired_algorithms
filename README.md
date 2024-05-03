@@ -22,10 +22,10 @@ There are multiple components in this project, each with its own default impleme
 ### Swarm algorithms
 
 The following are the algorithms currently implemented:
-- Particle Swarm Optimization (PSO).
+- Particle Swarm Optimization (PSO). [4]
 - Ant Colony Optimization (ACO).
 - Adaptive dynamic probabilistic elitist ACO (ADPE ACO) [2].
-- Adaptive Firefly Algorithm (AFFA) [1].
+- Adaptive Firefly Algorithm (AFFA) [1, 3].
 - Gaussian Firefly Algorithm.
 
 When adding new algorithms, make sure to extend each of these classes with your own implementation.
@@ -42,3 +42,9 @@ Vehicle Based on Modified Firefly Algorithm", Mathematical Problems in Engineeri
 
 [2] Chatterjee, A., Kim, E. & Reza, H. Adaptive Dynamic Probabilistic Elitist Ant Colony Optimization in Traveling 
 Salesman Problem. SN COMPUT. SCI. 1, 95 (2020). https://doi.org/10.1007/s42979-020-0083-z
+
+[3] X. Chen, M. Zhou, J. Huang and Z. Luo, "Global path planning using modified firefly algorithm," 2017 International
+Symposium on Micro-NanoMechatronics and Human Science (MHS), Nagoya, Japan, 2017, pp. 1-7, doi: 10.1109/MHS.2017.8305195.
+
+[4] Zhao, J., Deng, C., H, Y., Fei, H., & Li, D. (2024). Path planning of unmanned vehicles based on adaptive 
+particle swarm optimization algorithm. Computer Communications, 216, 112–129.
