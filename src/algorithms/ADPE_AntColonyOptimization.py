@@ -36,7 +36,7 @@ class ADPE_AntColonyOptimization:
         self.default_elitist_probability: float = default_elitist_probability
         self.maximum_global_tour_length = None
 
-    def find_shortest_route(self, path_specification, print_progress=True):
+    def run(self, path_specification, print_progress=True):
         """
         The ACO algorithm to find the shortest route across generations.
 
@@ -65,7 +65,7 @@ class ADPE_AntColonyOptimization:
             # Basically, each ant compute their shortest path on a separate thread
             # This way, more ants are deployed to find routes (hence, the better our algorithm will be)
             with Pool(self.num_processes) as p:
-                routes = p.map(self.find_route_parallel, [path_specification] * self.ants_per_gen)
+                routes = p.map(self.run_parallel, [path_specification] * self.ants_per_gen)
 
             routes = [r for r in routes if r is not None]
 
@@ -122,6 +122,6 @@ class ADPE_AntColonyOptimization:
 
         return best_route, checkpoints
 
-    def find_route_parallel(self, path_specification):
+    def run_parallel(self, path_specification):
         ant = Ant(self.environment, path_specification, self.convergence_iter, self.trail, self.step_size)
         return ant.find_route()
