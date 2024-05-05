@@ -44,17 +44,19 @@ class ParticleSwarmOptimization:
             self.particles.append(particle)
 
     def run(self):
+        checkpoints = []
+
         const_count: int = 0
 
-        for _ in range(self.max_iter):
+        for generation in range(self.max_iter):
             # Get the coefficients c1 and c2 based on iteration
-            c1: float = math.cos((math.pi / 2) * (_ / self.max_iter)) * math.cos(math.pi * (_ / self.max_iter)) + 1.5
-            c2: float = (math.sin((math.pi / 2) * (_ / self.max_iter)) * math.sin(math.pi * ((_ / self.max_iter) + 1.5))
+            c1: float = math.cos((math.pi / 2) * (generation / self.max_iter)) * math.cos(math.pi * (generation / self.max_iter)) + 1.5
+            c2: float = (math.sin((math.pi / 2) * (generation / self.max_iter)) * math.sin(math.pi * ((generation / self.max_iter) + 1.5))
                          + 1.5)
 
             # Update the speeds and positions of particles
             for particle in self.particles:
-                particle.update_particle(self.global_best_pos, particle.personal_best_pos, c1, c2, _, self.max_iter)
+                particle.update_particle(self.global_best_pos, particle.personal_best_pos, c1, c2, generation, self.max_iter)
 
             # Check if the particles have fallen into poor areas and get them out with Lévy flight
             # The particles are judged to have fallen into a poor area if they do not change in more than 10 iters
@@ -97,15 +99,19 @@ class ParticleSwarmOptimization:
             self.route.add(self.global_best_pos)
             print(self.global_best_pos)
 
+            if (generation + 1) == 1 or (generation + 1) == 3 or (generation + 1) == 5 \
+                    or (generation + 1) == 9 or (generation + 1) % 10 == 0:
+                checkpoints.append(self.route.size())
+
             # Check termination conditions (global best at end position)
             # We want to see if the global best is within 0.5
             # (safe margin) of the end position set the global best to end, append end to route and stop
             if self.global_best_pos.x_between(self.environment.end.x - 0.5, self.environment.end.x + 0.5) and \
                     self.global_best_pos.y_between(self.environment.end.y - 0.5, self.environment.end.y + 0.5):
                 self.route.add(self.environment.end)
-                return self.route
+                return self.route, checkpoints
 
-        return self.route
+        return self.route, checkpoints
 
     def evaluate_fitness(self, pos: Coordinate):
         # Minimize the distance to the goal but maximize the distance to the nearest obstacle

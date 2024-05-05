@@ -34,16 +34,18 @@ class FireflyAlgorithm:
                     gamma_end, step_size, obstacle_distance) for _ in range(population_size)]
 
     def run(self):
+        checkpoints = []
+
         if not self.best or (self.fireflies[0].intensity > self.best):
             self.best = self.fireflies[0].intensity
 
-        for w in range(self.max_iter):
+        for generation in range(self.max_iter):
             for i in range(len(self.fireflies)):
                 const_count = 0
                 for j in range(len(self.fireflies)):
                     # We want to maximize the brightness (i.e. minimize distance to goal)
                     if self.fireflies[i].intensity < self.fireflies[j].intensity:
-                        adaptive = w / self.max_iter
+                        adaptive = generation / self.max_iter
                         self.fireflies[i].move_towards(self.fireflies[j].position, adaptive)
 
                         # We double-check because of uncertainty in the fireflies' movement
@@ -58,12 +60,16 @@ class FireflyAlgorithm:
 
                     self.fireflies[i].update_intensity()
 
+                    if (generation + 1) == 1 or (generation + 1) == 3 or (generation + 1) == 5 \
+                            or (generation + 1) == 9 or (generation + 1) % 10 == 0:
+                        checkpoints.append(self.route.size())
+
                     if self.fireflies[i].reach_end():
-                        return self.fireflies[i].route
+                        return self.fireflies[i].route, checkpoints
 
                     if self.fireflies[i].intensity > self.best:
                         self.best = self.fireflies[i].intensity
                         self.route = self.fireflies[i].route
                         print(self.fireflies[i].intensity)
 
-        return self.route
+        return self.route, checkpoints
