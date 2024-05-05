@@ -113,7 +113,7 @@ class Environment:
             string += f"  Center: {obstacle.center}, Radius: {obstacle.radius}\n"
         return string
 
-    def visualize_environment(self, route: Route = None):
+    def visualize(self, route: Route = None):
         """
         Visualize how the route looks like in the environment.
 
