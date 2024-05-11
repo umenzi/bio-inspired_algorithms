@@ -1,9 +1,8 @@
 from environments.Environment import Environment
 
 from helpers.Coordinate import Coordinate
-from helpers.Route import Route
+from helpers.Path import Path
 from helpers.SurroundingPheromone import SurroundingPheromone
-from helpers.Direction import Direction
 
 
 class ACOEnvironment(Environment):
@@ -12,8 +11,8 @@ class ACOEnvironment(Environment):
     well as the starting and end coordinates.
     """
 
-    def __init__(self, width: int, height: int, grid, start=None, end=None):
-        super().__init__(width, height, grid, start, end)
+    def __init__(self, width: int, height: int, obstacles=None, start=None, end=None):
+        super().__init__(width, height, obstacles, start, end)
 
         # Specific to ACO, we use pheromones to guide the ants.
         self.pheromones = None
@@ -28,44 +27,39 @@ class ACOEnvironment(Environment):
 
         for i in range(self.width):
             for j in range(self.height):
-                if self.grid[i][j] == 0:
+                if self.distance_to_closest_obstacle(Coordinate(i, j)) < 0:
                     self.pheromones[i][j] = 0
 
     def reset(self):
         self.initialize_pheromones()
 
-    def add_pheromone_route(self, route: Route, q: int):
+    def add_pheromone_path(self, path: Path, q: int):
         """
-        Update the pheromones along a certain route according to a certain Q.
+        Update the pheromones along a certain path according to a certain Q.
 
-        :param route: The route of the ants
-        :param q: Normalization factor for amount of dropped pheromone
+        :param path: The path of the ant
+        :param q: Normalization factor for the amount of dropped pheromone
         :return:
         """
         amount = 0
 
-        if route.size() != 0:
-            amount = q / route.size()
+        if path.size() != 0:
+            amount = q / path.size()
 
-        cur = route.get_start()
+        for coordinate in path.get_path():
+            self.pheromones[coordinate.x][coordinate.y] += amount
 
-        self.pheromones[cur.x][cur.y] += amount
-
-        for direction in route.get_route():
-            cur = cur.add_direction(Direction(direction))
-            self.pheromones[cur.x][cur.y] += amount
-
-    def add_pheromone_routes(self, routes, q: int):
+    def add_pheromone_paths(self, paths, q: int):
         """
-        Update pheromones for a list of routes
+        Update pheromones for a list of paths
 
-        :param routes: A list of routes
+        :param paths: A list of paths
         :param q: Normalization factor for amount of dropped pheromone
         :return:
         """
 
-        for r in routes:
-            self.add_pheromone_route(r, q)
+        for path in paths:
+            self.add_pheromone_path(path, q)
 
     def evaporate(self, rho: float):
         """
@@ -78,38 +72,54 @@ class ACOEnvironment(Environment):
             for j in range(self.height):
                 self.pheromones[i][j] *= (1 - rho)
 
-    def get_surrounding_pheromone(self, position: Coordinate):
+    def get_surrounding_pheromone(self, position: Coordinate, step_size: int = 1):
         """
-        Returns the amount of pheromones on the neighbouring positions (N/S/E/W).
+        Returns the number of pheromones on the neighbouring positions (N/S/E/W).
 
+        :param step_size: How many cells do we move in each direction.
         :param position: The position to check the neighbours of.
         :return: The pheromones of the neighbouring positions.
         """
 
-        north = self.get_pheromone(Coordinate(position.x, position.y - 1))
-        south = self.get_pheromone(Coordinate(position.x, position.y + 1))
-        east = self.get_pheromone(Coordinate(position.x + 1, position.y))
-        west = self.get_pheromone(Coordinate(position.x - 1, position.y))
+        up = self.get_pheromone(Coordinate(position.x, position.y + step_size))
+        up_right = self.get_pheromone(Coordinate(position.x + step_size, position.y + step_size))
+        right = self.get_pheromone(Coordinate(position.x + step_size, position.y))
+        down_right = self.get_pheromone(Coordinate(position.x + step_size, position.y - step_size))
+        down = self.get_pheromone(Coordinate(position.x, position.y - step_size))
+        down_left = self.get_pheromone(Coordinate(position.x - step_size, position.y - step_size))
+        left = self.get_pheromone(Coordinate(position.x - step_size, position.y))
+        up_left = self.get_pheromone(Coordinate(position.x - step_size, position.y + step_size))
 
-        return SurroundingPheromone(north, east, south, west)
+        return SurroundingPheromone(up, up_right, right, down_right, down, down_left, left, up_left)
 
     def get_pheromone(self, pos: Coordinate):
         """
-        Pheromone getter for a specific position. If the position is not in bounds returns 0
+        Pheromone getter for a specific position. If the position is not in bounds, returns 0
 
         :param pos: Position coordinate
         :return: pheromone at point
         """
 
-        if not self.in_bounds(pos):
+        if self.distance_to_closest_obstacle(pos) < 0:
             return 0
         return self.pheromones[pos.x][pos.y]
 
     @staticmethod
-    def create_environment(width: int, height: int, start_pos: (int, int), end_pos: (int, int),
-                           obstacle_radius: int, amount_of_obstacles: float):
-        environment = Environment.create_environment(width, height, start_pos,
-                                                     end_pos, obstacle_radius, amount_of_obstacles)
+    def create_new_environment(width: int, height: int, obstacles=None,
+                               start_pos: Coordinate = None, end_pos: Coordinate = None):
+        """
+        :return: a new ACO environment with the given parameters.
+        """
+        environment: Environment = Environment.create_environment(width, height, obstacles,
+                                                                  start_pos, end_pos)
 
-        return ACOEnvironment(environment.width, environment.height,
-                              environment.grid, environment.start, environment.end)
+        return ACOEnvironment(environment.width, environment.height, environment.obstacles,
+                              environment.start, environment.end)
+
+    @staticmethod
+    def create_from_environment(environment: Environment):
+        """
+        :return: a new ACO environment from the given environment.
+        """
+        return ACOEnvironment(environment.width, environment.height, environment.obstacles,
+                              environment.start, environment.end)

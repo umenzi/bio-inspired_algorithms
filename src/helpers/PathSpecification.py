@@ -10,8 +10,8 @@ class PathSpecification:
         """
         Constructs a new path specification.
 
-        :param start: the starting coordinate.
-        :param end: the final coordinate.
+        :param start: The starting coordinate.
+        :param end: The final coordinate.
         """
 
         self.start: Coordinate = start
@@ -19,23 +19,24 @@ class PathSpecification:
 
     def get_start(self):
         """
-        :return: the starting coordinate
+        :return: The starting coordinate
         """
 
         return self.start
 
     def get_end(self):
         """
-        :return: the final coordinate
+        :return: The final coordinate
         """
+
         return self.end
 
     def __eq__(self, other):
         """
         Equals method for PathSpecification.
 
-        :param other: the other PathSpecification
-        :return: whether they're equal
+        :param other: The other PathSpecification
+        :return: Whether they're equal
         """
 
         return self.start == other.start and self.end == other.end
@@ -43,7 +44,7 @@ class PathSpecification:
     def __str__(self):
         """
         String representation of path specification
-        :return: the representation
+        :return: The representation
         """
 
         return "Start: " + str(self.start) + " End: " + str(self.end)
@@ -53,8 +54,8 @@ class PathSpecification:
         """
         Reads the coordinates and returns a path specification.
 
-        :param start_pos: starting position of the agents
-        :param end_pos: final position of the agents
+        :param start_pos: Starting position of the agent(s)
+        :param end_pos: Final position of the agent(s)
         :return: Specification of the environment.
         """
 
