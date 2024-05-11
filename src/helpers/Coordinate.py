@@ -149,3 +149,6 @@ class Coordinate:
         dy = distance * math.sin(angle)
 
         return Coordinate(self.x + dx, self.y + dy)
+
+    def distance_to(self, other):
+        return math.sqrt((other.x - self.x) ** 2 + (other.y - self.y) ** 2)

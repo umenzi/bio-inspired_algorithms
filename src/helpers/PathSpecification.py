@@ -54,8 +54,8 @@ class PathSpecification:
         """
         Reads the coordinates and returns a path specification.
 
-        :param start_pos: Starting position of the agents
-        :param end_pos: Final position of the agents
+        :param start_pos: Starting position of the agent(s)
+        :param end_pos: Final position of the agent(s)
         :return: Specification of the environment.
         """
 

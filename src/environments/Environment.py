@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 from helpers.Coordinate import Coordinate
 from helpers.Obstacle import Obstacle
-from helpers.Route import Route
+from helpers.Path import Path
 
 
 class Environment:
@@ -113,11 +113,11 @@ class Environment:
             string += f"  Center: {obstacle.center}, Radius: {obstacle.radius}\n"
         return string
 
-    def visualize_environment(self, route: Route = None):
+    def visualize(self, path: Path = None):
         """
-        Visualize how the route looks like in the environment.
+        Visualize how the path looks like in the environment.
 
-        :param route: To be visualized
+        :param path: To be visualized
         :return: The visualization of the environment
         """
 
@@ -125,7 +125,7 @@ class Environment:
 
         # Draw obstacles as circles
         for obstacle in self.obstacles:
-            # We need to convert the obstacle to a (int, int) because matplotlib requires it is subscriptable
+            # We need to convert the obstacle to an (int, int) because matplotlib requires it is subscriptable
             circle = plt.Circle((obstacle.center.x, obstacle.center.y), obstacle.radius, color='darkgrey')
             ax.add_artist(circle)
 
@@ -133,10 +133,10 @@ class Environment:
         ax.add_patch(plt.Rectangle((self.start.x, self.start.y), 1, 1, color='green'))  # Start in green
         ax.add_patch(plt.Rectangle((self.end.x, self.end.y), 1, 1, color='red'))  # End in red
 
-        # If a route is provided, draw the route on the grid
-        if route is not None:
-            x_values = [point.x for point in route.get_route()]
-            y_values = [point.y for point in route.get_route()]
+        # If a path is provided, draw the path on the grid
+        if path is not None:
+            x_values = [point.x for point in path.get_path()]
+            y_values = [point.y for point in path.get_path()]
             ax.plot(x_values, y_values, 'b-', linewidth=2)  # Route in blue, with a bigger width to make it more visible
 
         # Adjust axes limits
@@ -193,7 +193,8 @@ class Environment:
             while current_amount < amount_of_obstacles:
                 obstacle_pos = Coordinate(random.randint(left, right), random.randint(bottom, top))
 
-                if all(distance(obstacle_pos, obstacle2.center) >= (obstacle[0] + obstacle2.radius) for obstacle2 in obstacles):
+                if all(distance(obstacle_pos, obstacle2.center) >=
+                       (obstacle[0] + obstacle2.radius) for obstacle2 in obstacles):
                     obstacles.append(Obstacle(obstacle_pos, obstacle[0]))
                     current_amount += 1
 
@@ -243,7 +244,7 @@ def get_amount_of_obstacles(height, width, obstacle_percentage, obstacle_radius)
     # Calculate how many cells we can place obstacles in (80% of the real total amount)
     total_cells = width * height * 0.8
 
-    # Hence, the max amount of possible obstacles is:
+    # Hence, the max number of possible obstacles is:
     max_amount = total_cells / obstacle_area
 
     # Apply the percentage

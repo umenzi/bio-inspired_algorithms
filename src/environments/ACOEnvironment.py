@@ -1,7 +1,7 @@
 from environments.Environment import Environment
 
 from helpers.Coordinate import Coordinate
-from helpers.Route import Route
+from helpers.Path import Path
 from helpers.SurroundingPheromone import SurroundingPheromone
 
 
@@ -33,33 +33,33 @@ class ACOEnvironment(Environment):
     def reset(self):
         self.initialize_pheromones()
 
-    def add_pheromone_route(self, route: Route, q: int):
+    def add_pheromone_path(self, path: Path, q: int):
         """
-        Update the pheromones along a certain route according to a certain Q.
+        Update the pheromones along a certain path according to a certain Q.
 
-        :param route: The route of the ant
+        :param path: The path of the ant
         :param q: Normalization factor for the amount of dropped pheromone
         :return:
         """
         amount = 0
 
-        if route.size() != 0:
-            amount = q / route.size()
+        if path.size() != 0:
+            amount = q / path.size()
 
-        for coordinate in route.get_route():
+        for coordinate in path.get_path():
             self.pheromones[coordinate.x][coordinate.y] += amount
 
-    def add_pheromone_routes(self, routes, q: int):
+    def add_pheromone_paths(self, paths, q: int):
         """
-        Update pheromones for a list of routes
+        Update pheromones for a list of paths
 
-        :param routes: A list of routes
+        :param paths: A list of paths
         :param q: Normalization factor for amount of dropped pheromone
         :return:
         """
 
-        for r in routes:
-            self.add_pheromone_route(r, q)
+        for path in paths:
+            self.add_pheromone_path(path, q)
 
     def evaporate(self, rho: float):
         """
@@ -94,7 +94,7 @@ class ACOEnvironment(Environment):
 
     def get_pheromone(self, pos: Coordinate):
         """
-        Pheromone getter for a specific position. If the position is not in bounds returns 0
+        Pheromone getter for a specific position. If the position is not in bounds, returns 0
 
         :param pos: Position coordinate
         :return: pheromone at point
@@ -106,7 +106,7 @@ class ACOEnvironment(Environment):
 
     @staticmethod
     def create_new_environment(width: int, height: int, obstacles=None,
-                           start_pos: Coordinate = None, end_pos: Coordinate = None):
+                               start_pos: Coordinate = None, end_pos: Coordinate = None):
         """
         :return: a new ACO environment with the given parameters.
         """

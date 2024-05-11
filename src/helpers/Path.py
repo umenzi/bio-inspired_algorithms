@@ -1,19 +1,19 @@
 from helpers.Coordinate import Coordinate
 
 
-class Route:
+class Path:
     """
-    Class representing a route.
+    Class representing a path.
     """
 
     def __init__(self, start: Coordinate):
         """
-        Route takes a starting coordinate to initialize.
+        Path takes a starting coordinate to initialize.
 
         :param start: The starting coordinate.
         """
 
-        self.route = [start]
+        self.path = [start]
         self.start: Coordinate = start
 
     def add(self, coordinate: Coordinate):
@@ -23,26 +23,26 @@ class Route:
         :param coordinate: The coordinate we moved in.
         """
 
-        self.route.append(coordinate)
+        self.path.append(coordinate)
         return
 
     def size(self):
         """
-        Returns the length of the route
+        Returns the length of the path
 
-        :return: Length of the route
+        :return: Length of the path
         """
 
-        return len(self.route)
+        return len(self.path)
 
-    def get_route(self):
+    def get_path(self):
         """
         Getter for the list of directions.
 
         :return: List of directions
         """
 
-        return self.route
+        return self.path
 
     def get_start(self):
         """
@@ -55,33 +55,33 @@ class Route:
 
     def shorter_than(self, other):
         """
-        Function that checks whether a route is smaller than another route.
+        Function that checks whether a path is smaller than another path.
 
-        :param other: Other the other route
-        :return: Whether the route is shorter
+        :param other: Other the other path
+        :return: Whether the path is shorter
         """
 
         return self.size() < other.size()
 
     def remove_last(self):
         """
-        Take a step back in the route and return the last direction.
+        Take a step back in the path and return the last direction.
 
         :return: The last direction
         """
 
-        return self.route.pop()
+        return self.path.pop()
 
     def __str__(self):
         """
-        Build a string representing the route as the format specified in the manual.
+        Build a string representing the path as the format specified in the manual.
 
-        :return: String with the specified format of a route
+        :return: String with the specified format of a path
         """
 
         string = ""
 
-        for coordinate in self.route:
+        for coordinate in self.path:
             string += str(coordinate)
             string += ";\n"
 
@@ -89,25 +89,25 @@ class Route:
 
     def __eq__(self, other):
         """
-        Equals method for route
+        Equals method for the path
 
-        :param other: The other route
+        :param other: The other path
         :return: Whether they are equal
         """
 
-        return self.start == other.start and self.route == other.route
+        return self.start == other.start and self.path == other.path
 
     def write_to_file(self, file_path):
         """
-        Method that implements the specified format for writing a route to a file.
+        Method that implements the specified format for writing a path to a file.
 
-        :param file_path: Path to route file.
+        :param file_path: Path to path file.
         :raises: IOError if the file path is invalid.
         """
 
         f = open(file_path, "w")
         string = ""
-        string += str(len(self.route))
+        string += str(len(self.path))
         string += ";\n"
         string += str(self.start)
         string += ";\n"

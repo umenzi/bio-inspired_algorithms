@@ -1,10 +1,8 @@
-import random
-
-from environments import ACOEnvironment
-from agents.Ant import Ant
 from multiprocessing import Pool
 
-from helpers.Route import Route
+from agents.Ant import Ant
+from environments import ACOEnvironment
+from helpers.Path import Path
 
 
 class AntColonyOptimization:
@@ -12,7 +10,7 @@ class AntColonyOptimization:
     Ant Colony Optimization is an algorithm based on the exploratory behaviour of ants to find food.
 
     Agents in the algorithm act as ants and deposit pheromone on the paths they travel, which will be updated based
-    on the quality of said path. In our case, this relates directly to the length of the route. Through this process,
+    on the quality of said path. In our case, this relates directly to the length of the path. Through this process,
     agents search for the optimal path through a graph or network.
 
     The ACO algorithm is put in use in optimization problems where the search space is large, and many solutions are
@@ -35,25 +33,25 @@ class AntColonyOptimization:
         self.num_processes: int = num_processes
         self.maximum_global_tour_length = None
 
-    def find_shortest_route(self, path_specification, print_progress=True):
+    def run(self, path_specification, print_progress=True):
         """
-        The ACO algorithm to find the shortest route across generations.
+        The ACO algorithm to find the shortest path across generations.
 
-        We first reset the pheromones (i.e., initialize them), then we create a specified
+        We first reset the pheromones (i.e. initialize them), then we create a specified
         number of ants for each generation and keep track of the shortest path found amongst all of them.
 
         After each generation, we evaporate the existing pheromones by the chosen evaporation parameter
-        ρ, and we add the pheromones of each the route found by the ants.
+        ρ, and we add the pheromones of each the path found by the ants.
         This process is shown in the following pseudocode block.
 
         :param path_specification: The start and end coordinates of the path
         :param print_progress: Whether we print the result of each generation
-        :return: The best route found
+        :return: The best path found
         """
 
         self.environment.reset()
 
-        best_route: Route = None
+        best_path: Path = None
         count = 0
         checkpoints = []
 
@@ -63,55 +61,55 @@ class AntColonyOptimization:
 
             # We introduce multi-threading
             # Basically, each ant compute their shortest path on a separate thread
-            # This way, more ants are deployed to find routes (hence, the better our algorithm will be)
+            # This way, more ants are deployed to find paths (hence, the better our algorithm will be)
             with Pool(self.num_processes) as p:
-                routes = p.map(self.find_route_parallel, [path_specification] * self.ants_per_gen)
+                paths = p.map(self.run_parallel, [path_specification] * self.ants_per_gen)
 
-            routes = [r for r in routes if r is not None]
+            paths = [r for r in paths if r is not None]
 
-            prev = best_route
+            prev = best_path
 
-            for route in routes:
-                if best_route is None:
-                    best_route = route
-                if route.shorter_than(best_route):
-                    best_route = route
+            for path in paths:
+                if best_path is None:
+                    best_path = path
+                if path.shorter_than(best_path):
+                    best_path = path
 
-            # We get the longest route for the probabilistic Elitism
+            # We get the longest path for the probabilistic Elitism
             if self.maximum_global_tour_length is None:
-                self.maximum_global_tour_length = best_route.size()
+                self.maximum_global_tour_length = best_path.size()
 
-            if best_route is not None and prev is not None and prev == best_route:
+            if best_path is not None and prev is not None and prev == best_path:
                 count += 1
             else:
                 count = 0
 
             if print_progress:
-                print("Routes found so far:", len(routes))
-                if best_route is not None:
-                    print("Best route's length:", best_route.size())
+                print("Paths found so far:", len(paths))
+                if best_path is not None:
+                    print("Best path's length:", best_path.size())
                 print("\n")
 
             if count >= self.no_change_iter:
                 if print_progress:
                     print("No change for many generations")
-                return best_route, checkpoints
+                return best_path, checkpoints
 
-            if len(routes) == 0:
+            if len(paths) == 0:
                 continue
 
             self.environment.evaporate(self.evaporation)
 
-            self.environment.add_pheromone_routes(routes, self.q)
+            self.environment.add_pheromone_paths(paths, self.q)
 
             # Basic ACO: No elitism
 
             if (generation + 1) == 1 or (generation + 1) == 3 or (generation + 1) == 5 \
                     or (generation + 1) == 9 or (generation + 1) % 10 == 0:
-                checkpoints.append(best_route.size())
+                checkpoints.append(best_path.size())
 
-        return best_route, checkpoints
+        return best_path, checkpoints
 
-    def find_route_parallel(self, path_specification):
+    def run_parallel(self, path_specification):
         ant = Ant(self.environment, path_specification, self.convergence_iter, self.trail, self.step_size)
-        return ant.find_route()
+        return ant.find_path()
