@@ -9,6 +9,7 @@ class Direction(enum.Enum):
     but this includes the most common directions you could use.
     Recommended when you want to move in a grid or graph-like structure.
     """
+
     up = 0
     up_right = 1
     right = 2
@@ -26,4 +27,5 @@ class Direction(enum.Enum):
         :param direction: The direction.
         :return: An integer from 0-7.
         """
+
         return direction.value

@@ -14,6 +14,7 @@ class Agent:
         :param environment: environments the ant will be running in.
         :param path_specification: The path specification consists of a start coordinate and an end coordinate.
         """
+
         self.environment = environment
         self.start: Coordinate = path_specification.get_start()
         self.end: Coordinate = path_specification.get_end()
@@ -27,6 +28,7 @@ class Agent:
         :param pos: the position to check
         :return: True if out of bounds or colliding with an obstacle, False otherwise
         """
+
         xout: bool = not (0 <= pos.x <= self.environment.width - 1)
         yout: bool = not (0 <= pos.y <= self.environment.height - 1)
         obs: bool = self.environment.distance_to_closest_obstacle(pos) < obstacle_distance

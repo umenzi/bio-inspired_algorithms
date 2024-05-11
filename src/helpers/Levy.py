@@ -9,6 +9,7 @@ def levy_flight(beta: float, size: int):
     :param size: the number of samples to generate
     :return: the step lengths
     """
+
     # Draw samples from a uniform distribution
     u = np.random.uniform(0.01, 1, size=size)
 

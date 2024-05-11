@@ -10,7 +10,7 @@ import numpy as np
 
 class Ant(Agent):
     """
-    agents representing the ant functionality
+    An agent representing the ant functionality
     """
 
     def __init__(self, environment: ACOEnvironment, path_specification: PathSpecification,
