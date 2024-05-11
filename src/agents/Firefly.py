@@ -8,7 +8,7 @@ from agents.Agent import Agent
 from environments.Environment import Environment
 from helpers.Coordinate import Coordinate
 from helpers.PathSpecification import PathSpecification
-from helpers.Route import Route
+from helpers.Path import Path
 
 
 class Firefly(Agent):
@@ -27,7 +27,7 @@ class Firefly(Agent):
         self.gamma_end = gamma_end
         self.__intensity: float = 0.0
         self.obstacle_distance = obstacle_distance
-        self.route = Route(path_specification.start)
+        self.path: Path = Path(path_specification.start)
 
         self.current_position: Coordinate = path_specification.start
         self.update_intensity()
@@ -63,7 +63,7 @@ class Firefly(Agent):
 
         if not self.position_out_of_bounds(Coordinate(new_pos_x, new_pos_y), obstacle_distance=self.obstacle_distance):
             self.current_position = Coordinate(new_pos_x, new_pos_y)
-            self.route.add(self.current_position)
+            self.path.add(self.current_position)
 
         return self.current_position  # return the current position
 
@@ -78,11 +78,11 @@ class Firefly(Agent):
         :return: True if the firefly has reached the end, False otherwise.
         """
 
-        if self.route.get_route()[-1].x_between(self.environment.end.x - 0.5,
-                                                self.environment.end.x + 0.5) and \
-                self.route.get_route()[-1].y_between(self.environment.end.y - 0.5,
-                                                     self.environment.end.y + 0.5):
-            self.route.add(self.environment.end)
+        if self.path.get_path()[-1].x_between(self.environment.end.x - 0.5,
+                                              self.environment.end.x + 0.5) and \
+                self.path.get_path()[-1].y_between(self.environment.end.y - 0.5,
+                                                   self.environment.end.y + 0.5):
+            self.path.add(self.environment.end)
             return True
         return False
 

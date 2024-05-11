@@ -1,7 +1,7 @@
 from environments.Environment import Environment
 from agents.Firefly import Firefly
 from helpers.PathSpecification import PathSpecification
-from helpers.Route import Route
+from helpers.Path import Path
 
 
 class FireflyAlgorithm:
@@ -25,7 +25,7 @@ class FireflyAlgorithm:
 
         self.environment = environment
         self.path_specification = path_specification
-        self.route = Route(path_specification.start)
+        self.path = Path(path_specification.start)
 
         self.max_iter = max_iter
         self.best = None
@@ -62,14 +62,14 @@ class FireflyAlgorithm:
 
                     if (generation + 1) == 1 or (generation + 1) == 3 or (generation + 1) == 5 \
                             or (generation + 1) == 9 or (generation + 1) % 10 == 0:
-                        checkpoints.append(self.route.size())
+                        checkpoints.append(self.path.size())
 
                     if self.fireflies[i].reach_end():
-                        return self.fireflies[i].route, checkpoints
+                        return self.fireflies[i].path, checkpoints
 
                     if self.fireflies[i].intensity > self.best:
                         self.best = self.fireflies[i].intensity
-                        self.route = self.fireflies[i].route
+                        self.path = self.fireflies[i].path
                         print(self.fireflies[i].intensity)
 
-        return self.route, checkpoints
+        return self.path, checkpoints

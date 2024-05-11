@@ -9,7 +9,7 @@ the navigation of multi-agent systems in extreme environments.
 There are multiple components in this project, each with its own default implementation:
 
 - The default environment, `Environment.py`, is a 2D grid with obstacles and a starting and final position.
-  - Special relevance for the  `visualize_environment` method, which plots the environment and the route found by the
+  - Special relevance for the  `visualize_environment` method, which plots the environment and the path found by the
     algorithm, if any.
     - The user can generate as many types of obstacles as desired
       by providing an array of the obstacles' radius and their frequencies. 
@@ -26,7 +26,6 @@ The following are the algorithms currently implemented:
 - Ant Colony Optimization (ACO).
 - Adaptive dynamic probabilistic elitist ACO (ADPE ACO) [2].
 - Adaptive Firefly Algorithm (AFFA) [1, 3].
-- Gaussian Firefly Algorithm.
 
 When adding new algorithms, make sure to extend each of these classes with your own implementation.
 You may also need to extend the default environment, as in the case of the ACO algorithm.

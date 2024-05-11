@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 from helpers.Coordinate import Coordinate
 from helpers.Obstacle import Obstacle
-from helpers.Route import Route
+from helpers.Path import Path
 
 
 class Environment:
@@ -113,11 +113,11 @@ class Environment:
             string += f"  Center: {obstacle.center}, Radius: {obstacle.radius}\n"
         return string
 
-    def visualize(self, route: Route = None):
+    def visualize(self, path: Path = None):
         """
-        Visualize how the route looks like in the environment.
+        Visualize how the path looks like in the environment.
 
-        :param route: To be visualized
+        :param path: To be visualized
         :return: The visualization of the environment
         """
 
@@ -133,10 +133,10 @@ class Environment:
         ax.add_patch(plt.Rectangle((self.start.x, self.start.y), 1, 1, color='green'))  # Start in green
         ax.add_patch(plt.Rectangle((self.end.x, self.end.y), 1, 1, color='red'))  # End in red
 
-        # If a route is provided, draw the route on the grid
-        if route is not None:
-            x_values = [point.x for point in route.get_route()]
-            y_values = [point.y for point in route.get_route()]
+        # If a path is provided, draw the path on the grid
+        if path is not None:
+            x_values = [point.x for point in path.get_path()]
+            y_values = [point.y for point in path.get_path()]
             ax.plot(x_values, y_values, 'b-', linewidth=2)  # Route in blue, with a bigger width to make it more visible
 
         # Adjust axes limits
