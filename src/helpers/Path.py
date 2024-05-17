@@ -28,12 +28,17 @@ class Path:
 
     def size(self):
         """
-        Returns the length of the path
+        Returns the (Euclidean) length of the path
 
         :return: Length of the path
         """
 
-        return len(self.path)
+        size = 0
+
+        for i in range(len(self.path) - 1):
+            size += self.path[i].distance_to(self.path[i + 1])
+
+        return size
 
     def get_path(self):
         """
