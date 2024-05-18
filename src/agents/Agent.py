@@ -29,8 +29,8 @@ class Agent:
         :return: True if out of bounds or colliding with an obstacle, False otherwise
         """
 
-        xout: bool = not (0 <= pos.x <= self.environment.width - 1)
-        yout: bool = not (0 <= pos.y <= self.environment.height - 1)
+        x_out: bool = not (0 <= pos.x <= self.environment.width - 1)
+        y_out: bool = not (0 <= pos.y <= self.environment.height - 1)
         obs: bool = self.environment.distance_to_closest_obstacle(pos) < obstacle_distance
 
-        return xout or yout or obs
+        return x_out or y_out or obs

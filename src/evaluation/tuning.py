@@ -1,7 +1,6 @@
 from typing import Any
 
 import optuna
-import pandas as pd
 from numpy.random import PCG64
 
 from Config import CONFIG
