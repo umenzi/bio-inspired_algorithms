@@ -147,7 +147,7 @@ class Environment:
 
     @staticmethod
     def create_environment(width: int, height: int, obstacle_values,
-                           start_pos: Coordinate = None, end_pos: Coordinate = None):
+                           start_pos: Coordinate = None, end_pos: Coordinate = None, seed=None):
         """
         Method that creates an environment with obstacles.
 
@@ -159,6 +159,8 @@ class Environment:
         Default: (0, 0)
         :param end_pos: Of the agents (we assume all agents aim to arrive to the same position).
         Default: (width - 1, height - 1)
+        :param seed: The seed for the random number generator
+
         :return: An environment object with the specified parameters
         """
 
@@ -178,6 +180,8 @@ class Environment:
                  or start_pos.y >= height or end_pos.x >= width or end_pos.y >= height or
                  (start_pos.x == end_pos.x and start_pos.y == end_pos.y))):
             raise ValueError("The given start_pos and end_pos are not valid: make sure that both start_pos and end_pos")
+
+        random.seed(seed)
 
         # We now set the legal area for the obstacles
         left, right, top, bottom = compute_inner_space(width, height)

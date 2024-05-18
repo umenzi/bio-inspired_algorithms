@@ -17,9 +17,9 @@ class FireflyAlgorithm:
     are drawn from a Lévy distribution. This allows the fireflies to explore the search space more effectively.
     """
 
-    def __init__(self, environment: Environment, path_specification: PathSpecification, population_size, alpha_init=1.0,
-                 alpha_end=0.1, gamma_init=0.1, gamma_end: int = 5, beta=1, max_iter=100,
-                 step_size: int = 1, obstacle_distance: int = 0):
+    def __init__(self, environment: Environment, path_specification: PathSpecification, population_size,
+                 alpha_init: float = 1.0, alpha_end: float = 0.1, gamma_init: float = 0.1, gamma_end: float = 5,
+                 beta=1, max_iter=100, step_size: int = 1, obstacle_distance: int = 0):
         assert gamma_init < gamma_end, "Gamma init must be smaller than gamma end"
         assert alpha_init > alpha_end, "Alpha init must be greater than alpha end"
 
