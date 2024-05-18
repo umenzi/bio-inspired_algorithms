@@ -1,8 +1,7 @@
 # Bio-Inspired Navigation for MultiAgent Systems in Extreme Environments
 
-This repository presents a modular,
-easy-to-use framework for the simulation and analysis of Bio-Inspired algorithms for
-the navigation of multi-agent systems in extreme environments.
+This repository presents a modular, easy-to-use framework for the simulation and analysis
+of Bio-Inspired algorithms for the navigation of multi-agent systems in extreme environments.
 
 ## Getting started
 
@@ -32,6 +31,20 @@ You may also need to extend the default environment, as in the case of the ACO a
 PSO, for example, does not require any changes.
 
 A detailed example of several Bio-Inspired algorithms is given in `Main.ipynb`.
+
+## Evaluation
+
+The framework includes a simple evaluation of the algorithms, where we compare their performance based on:
+- Path length.
+- Reachability.
+- Planning.
+
+We evaluate the performance of algorithms for different obstacle densities, with each density level being tested in four distinct, randomly generated environments.
+Subsequently, 20 individual experiments are conducted for each obstacle-environment combination.
+We then compute the ean of the metrics from these 80 experiments, which provides a robust and reliable basis for the comparison.
+
+The code can be found in the `evaluation` folder.
+We also perform some hyperparameter tuning, using the [Optuna](https://optuna.org/) library.
 
 # References
 
