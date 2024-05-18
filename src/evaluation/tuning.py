@@ -1,4 +1,7 @@
+from typing import Any
+
 import optuna
+import pandas as pd
 from numpy.random import PCG64
 
 from Config import CONFIG
@@ -94,7 +97,7 @@ def objective(trial: optuna.Trial, obstacle_percentages, n_envs, algo):
     return new_size
 
 
-def tune(obstacle_percentages, n_envs, algo, n_trials=100, verbose: int = 0):
+def tune(obstacle_percentages, n_envs, algo, n_trials=100, verbose: int = 0) -> dict[str, Any]:
     study = optuna.create_study(direction="minimize")
 
     study.optimize(lambda trial: objective(trial, obstacle_percentages, n_envs, algo), n_trials=n_trials)
@@ -117,3 +120,14 @@ def tune(obstacle_percentages, n_envs, algo, n_trials=100, verbose: int = 0):
         for key, value in trial.params.items():
             print("    {}: {}".format(key, value))
     return study.best_params
+
+
+if '__main__' == __name__:
+    obstacle_percentages = [(2.5, 0.2), (1.5, 0.08)]
+    n_envs = 5
+    best_params = {}
+
+    for algo in CONFIG.ALGORITHMS:
+        best_params.update(tune(obstacle_percentages, n_envs, algo, n_trials=100, verbose=0))
+
+    print(best_params)
