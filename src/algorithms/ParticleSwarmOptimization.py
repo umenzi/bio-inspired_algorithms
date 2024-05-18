@@ -1,16 +1,16 @@
 import math
 import random
 
-from helpers.Levy import levy_flight
-
-from helpers.Path import Path
-from helpers.Coordinate import Coordinate
-from helpers.PathSpecification import PathSpecification
-from environments.Environment import Environment
 from agents.Particle import Particle
+from algorithms.Algorithm import Algorithm
+from environments.Environment import Environment
+from helpers.Coordinate import Coordinate
+from helpers.Levy import levy_flight
+from helpers.Path import Path
+from helpers.PathSpecification import PathSpecification
 
 
-class ParticleSwarmOptimization:
+class ParticleSwarmOptimization(Algorithm):
     """
     Particle Swarm Optimization is a population-based optimization technique inspired by the social behavior of birds
     flocking or fish schooling.
@@ -24,26 +24,42 @@ class ParticleSwarmOptimization:
     This allows the particles to explore the search space more effectively.
     """
 
-    def __init__(self, environment: Environment, path_specification: PathSpecification, num_particles: int,
-                 convergence_iter: int, trail: float, step_size: int, inertia_weight: float, max_iter: int = 100):
-        self.environment = environment
-        self.path_specification = path_specification
+    def __init__(self, environment: Environment, num_particles: int,
+                 convergence_iter: int, trail: float, step_size: int, inertia_weight: float, max_iter: int = 100,
+                 obstacle_distance: int = 0):
+        super().__init__(environment, step_size, obstacle_distance)
+
         self.num_particles = num_particles
-        self.particles = []
-        self.global_best_pos = path_specification.start
-        self.levy_best = path_specification.start
-        self.path = Path(path_specification.start)
         self.max_iter = max_iter
+        self.convergence_iter = convergence_iter
+        self.trail = trail
+        self.inertia_weight = inertia_weight
+
+    def run(self, path_specification: PathSpecification, print_progress: bool = True) -> (Path, list):
+        """
+        The Particle Swarm Optimization algorithm to find the shortest path across generations.
+
+        :param path_specification: The start and end coordinates of the path
+        :param print_progress: Whether we print the result of each generation
+
+        :return: The best path found and a list of checkpoints
+        """
+
+        # Initialize variables
+        particles = []
+        global_best_pos = path_specification.start
+        levy_best = path_specification.start
+        path = Path(path_specification.start)
 
         # Initialize particles with random velocities
-        for _ in range(num_particles):
+        for _ in range(self.num_particles):
             velocity_x = random.uniform(-1, 1)
             velocity_y = random.uniform(-1, 1)
-            particle = Particle(environment, path_specification, convergence_iter, trail, velocity_x, velocity_y,
-                                step_size, inertia_weight)
-            self.particles.append(particle)
+            particle = Particle(self.environment, path_specification, self.convergence_iter, self.trail, velocity_x,
+                                velocity_y,
+                                self.step_size, self.inertia_weight)
+            particles.append(particle)
 
-    def run(self):
         checkpoints = []
 
         const_count: int = 0
@@ -56,17 +72,17 @@ class ParticleSwarmOptimization:
                          math.sin(math.pi * ((generation / self.max_iter) + 1.5)) + 1.5)
 
             # Update the speeds and positions of particles
-            for particle in self.particles:
-                particle.update_particle(self.global_best_pos, particle.personal_best_pos,
+            for particle in particles:
+                particle.update_particle(global_best_pos, particle.personal_best_pos,
                                          c1, c2, generation, self.max_iter)
 
             # Check if the particles have fallen into poor areas and get them out with Lévy flight
             # The particles are judged to have fallen into a poor area if they do not change in more than 10 iters
-            if self.levy_best == self.global_best_pos:
+            if levy_best == global_best_pos:
                 const_count += 1
                 if const_count > 10:
                     # Do Lévy flight
-                    for particle in self.particles:
+                    for particle in particles:
                         levy_steps = levy_flight(beta=1.5, size=2)
                         levy_vel_x = levy_steps[0]
                         levy_vel_y = levy_steps[1]
@@ -84,36 +100,36 @@ class ParticleSwarmOptimization:
             else:
                 # Reset count and levy best
                 const_count = 0
-                self.levy_best = self.global_best_pos
+                levy_best = global_best_pos
 
             # Calculate particle fitness values, update personal bests and global best
-            for particle in self.particles:
+            for particle in particles:
                 fitness: float = self.evaluate_fitness(particle.current_position)
                 fitness_pb: float = self.evaluate_fitness(particle.personal_best_pos)
-                fitness_gb: float = self.evaluate_fitness(self.global_best_pos)
+                fitness_gb: float = self.evaluate_fitness(global_best_pos)
 
                 if fitness < fitness_pb:
                     particle.personal_best_pos = particle.current_position
                 if fitness < fitness_gb:
-                    self.global_best_pos = particle.current_position
+                    global_best_pos = particle.current_position
 
             # Add global best to the path
-            self.path.add(self.global_best_pos)
-            print(self.global_best_pos)
+            path.add(global_best_pos)
+            print(global_best_pos)
 
             if (generation + 1) == 1 or (generation + 1) == 3 or (generation + 1) == 5 \
                     or (generation + 1) == 9 or (generation + 1) % 10 == 0:
-                checkpoints.append(self.path.size())
+                checkpoints.append(path.size())
 
             # Check termination conditions (global best at end position)
             # We want to see if the global best is within 0.5
             # (safe margin) of the end position set the global best to end, append end to path and stop
-            if self.global_best_pos.x_between(self.environment.end.x - 0.5, self.environment.end.x + 0.5) and \
-                    self.global_best_pos.y_between(self.environment.end.y - 0.5, self.environment.end.y + 0.5):
-                self.path.add(self.environment.end)
-                return self.path, checkpoints
+            if global_best_pos.x_between(self.environment.end.x - 0.5, self.environment.end.x + 0.5) and \
+                    global_best_pos.y_between(self.environment.end.y - 0.5, self.environment.end.y + 0.5):
+                path.add(self.environment.end)
+                return path, checkpoints
 
-        return self.path, checkpoints
+        return path, checkpoints
 
     def evaluate_fitness(self, pos: Coordinate):
         # Minimize the distance to the goal but maximize the distance to the nearest obstacle

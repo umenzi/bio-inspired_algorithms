@@ -5,7 +5,7 @@ import pandas as pd
 from numpy.random import PCG64
 
 from Config import CONFIG
-from algorithms.ADPE_AntColonyOptimization import ADPE_AntColonyOptimization
+from algorithms.AdpeAntColonyOptimization import AdpeAntColonyOptimization
 from algorithms.AntColonyOptimization import AntColonyOptimization
 from algorithms.FireflyAlgorithm import FireflyAlgorithm
 from algorithms.ParticleSwarmOptimization import ParticleSwarmOptimization
@@ -54,26 +54,28 @@ def objective(trial: optuna.Trial, obstacle_percentages, n_envs, algo):
                                          num_processes=6)
         elif algo == "adpe_aco":
             aco_environment = ACOEnvironment.create_from_environment(environment)
-            algo = ADPE_AntColonyOptimization(aco_environment,
-                                              CONFIG.algos["aco"].aco_agents_per_generation,
-                                              CONFIG.algos["aco"].aco_no_generations,
-                                              q=trial.suggest_int("q", 100, 1000),
-                                              evaporation=trial.suggest_float("evaporation", 0.1, 0.9),
-                                              convergence_iter=CONFIG.train_config.convergence_iter,
-                                              sigma_elite=trial.suggest_int("sigma_elite", 10, 100),
-                                              no_change_iter=CONFIG.algos["aco"].aco_no_change_iter,
-                                              trail=trial.suggest_float("trail", 0.1, 1.0),
-                                              step_size=CONFIG.train_config.step_size,
-                                              num_processes=6)
+            algo = AdpeAntColonyOptimization(aco_environment,
+                                             CONFIG.algos["aco"].aco_agents_per_generation,
+                                             CONFIG.algos["aco"].aco_no_generations,
+                                             q=trial.suggest_int("q", 100, 1000),
+                                             evaporation=trial.suggest_float("evaporation", 0.1, 0.9),
+                                             convergence_iter=CONFIG.train_config.convergence_iter,
+                                             sigma_elite=trial.suggest_int("sigma_elite", 10, 100),
+                                             no_change_iter=CONFIG.algos["aco"].aco_no_change_iter,
+                                             trail=trial.suggest_float("trail", 0.1, 1.0),
+                                             step_size=CONFIG.train_config.step_size,
+                                             num_processes=6)
         elif algo == "pso":
-            algo = ParticleSwarmOptimization(environment, spec, num_particles=CONFIG.algos["pso"].pso_num_particles,
+            algo = ParticleSwarmOptimization(environment,
+                                             num_particles=CONFIG.algos["pso"].pso_num_particles,
                                              convergence_iter=trial.suggest_int("convergence_iter", 100, 5000),
                                              trail=trial.suggest_float("trail", 0.1, 1.0),
                                              step_size=CONFIG.train_config.step_size,
                                              inertia_weight=trial.suggest_float("inertia_weight", 0.1, 1.0),
                                              max_iter=CONFIG.train_config.convergence_iter)
         elif algo == "firefly":
-            algo = FireflyAlgorithm(environment, spec, population_size=CONFIG.algos["firefly"].fa_population_size,
+            algo = FireflyAlgorithm(environment,
+                                    population_size=CONFIG.algos["firefly"].fa_population_size,
                                     alpha_init=trial.suggest_float("alpha_init", 0.0, 1.0),
                                     alpha_end=trial.suggest_float("alpha_final", 0.0, 1.0),
                                     gamma_init=trial.suggest_float("gamma_init", 0.0, 10.0),

@@ -1,11 +1,14 @@
 from multiprocessing import Pool
 
 from agents.Ant import Ant
+from algorithms.Algorithm import Algorithm
 from environments import ACOEnvironment
 from helpers.Path import Path
+from helpers.PathSpecification import PathSpecification
+from environments.ACOEnvironment import ACOEnvironment
 
 
-class AntColonyOptimization:
+class AntColonyOptimization(Algorithm):
     """
     Ant Colony Optimization is an algorithm based on the exploratory behaviour of ants to find food.
 
@@ -20,8 +23,10 @@ class AntColonyOptimization:
 
     def __init__(self, environment: ACOEnvironment, ants_per_gen: int, generations: int,
                  q: int, evaporation: float, convergence_iter: int, no_change_iter: int, trail: float,
-                 step_size: int = 1, num_processes: int = 6):
-        self.environment: ACOEnvironment = environment
+                 step_size: int = 1, num_processes: int = 6, obstacle_distance: int = 0):
+        super().__init__(environment, step_size, obstacle_distance)
+
+        self.environment: ACOEnvironment = ACOEnvironment.create_from_environment(environment)
         self.ants_per_gen: int = ants_per_gen
         self.generations: int = generations
         self.q: int = q
@@ -29,11 +34,10 @@ class AntColonyOptimization:
         self.convergence_iter: int = convergence_iter
         self.no_change_iter: int = no_change_iter
         self.trail: float = trail
-        self.step_size: int = step_size
         self.num_processes: int = num_processes
         self.maximum_global_tour_length = None
 
-    def run(self, path_specification, print_progress=True):
+    def run(self, path_specification: PathSpecification, print_progress: bool = True) -> (Path, list):
         """
         The ACO algorithm to find the shortest path across generations.
 
@@ -46,7 +50,8 @@ class AntColonyOptimization:
 
         :param path_specification: The start and end coordinates of the path
         :param print_progress: Whether we print the result of each generation
-        :return: The best path found
+
+        :return: The best path found and a list of checkpoints
         """
 
         self.environment.reset()
