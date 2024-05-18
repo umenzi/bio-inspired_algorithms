@@ -3,6 +3,7 @@ from multiprocessing import Pool
 from agents.Ant import Ant
 from algorithms.Algorithm import Algorithm
 from environments import ACOEnvironment
+from environments.Environment import Environment
 from helpers.Path import Path
 from helpers.PathSpecification import PathSpecification
 from environments.ACOEnvironment import ACOEnvironment
@@ -21,7 +22,7 @@ class AntColonyOptimization(Algorithm):
     other problems such as resource allocation, machine learning, and data mining.
     """
 
-    def __init__(self, environment: ACOEnvironment, ants_per_gen: int, generations: int,
+    def __init__(self, environment: Environment, ants_per_gen: int, generations: int,
                  q: int, evaporation: float, convergence_iter: int, no_change_iter: int, trail: float,
                  step_size: int = 1, num_processes: int = 6, obstacle_distance: int = 0):
         super().__init__(environment, step_size, obstacle_distance)
