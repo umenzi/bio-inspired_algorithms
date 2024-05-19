@@ -3,6 +3,14 @@
 This repository presents a modular, easy-to-use framework for the simulation and analysis
 of Bio-Inspired algorithms for the navigation of multi-agent systems in extreme environments.
 
+## Prerequisites
+
+This project requires a set of the following Python packages that can be installed by running:
+
+```bash
+pip install -r requirements.txt
+```
+
 ## Getting started
 
 There are multiple components in this project, each with its own default implementation:
