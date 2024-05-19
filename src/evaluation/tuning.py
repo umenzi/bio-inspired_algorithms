@@ -13,14 +13,14 @@ from environments.Environment import Environment
 from helpers.PathSpecification import PathSpecification
 
 
-def objective(trial: optuna.Trial, obstacle_percentages, n_envs, algo):
+def objective(trial: optuna.Trial, obstacle_percentages, n_envs, algo_id):
     """
     Objective function for the hyperparameter tuning
 
     :param trial: The optuna trial
     :param obstacle_percentages: percentage of obstacles in the environment
     :param n_envs: number of environments to run
-    :param algo: algorithm to tune
+    :param algo_id: algorithm to tune
 
     :return: The size of the shortest path (i.e. the objective function to minimize)
     """
@@ -39,9 +39,8 @@ def objective(trial: optuna.Trial, obstacle_percentages, n_envs, algo):
         spec = PathSpecification(CONFIG.env.start_pos, CONFIG.env.end_pos)
 
         # Select the correct algorithm
-        if algo == "aco":
-            aco_environment = ACOEnvironment.create_from_environment(environment)
-            algo = AntColonyOptimization(aco_environment,
+        if algo_id == "aco":
+            algo = AntColonyOptimization(environment,
                                          CONFIG.algos["aco"].aco_agents_per_generation,
                                          CONFIG.algos["aco"].aco_no_generations,
                                          q=trial.suggest_int("q", 100, 1000),
@@ -51,9 +50,8 @@ def objective(trial: optuna.Trial, obstacle_percentages, n_envs, algo):
                                          trail=trial.suggest_float("trail", 0.1, 1.0),
                                          step_size=CONFIG.train_config.step_size,
                                          num_processes=6)
-        elif algo == "adpe_aco":
-            aco_environment = ACOEnvironment.create_from_environment(environment)
-            algo = AdpeAntColonyOptimization(aco_environment,
+        elif algo_id == "adpe_aco":
+            algo = AdpeAntColonyOptimization(environment,
                                              CONFIG.algos["aco"].aco_agents_per_generation,
                                              CONFIG.algos["aco"].aco_no_generations,
                                              q=trial.suggest_int("q", 100, 1000),
@@ -64,7 +62,7 @@ def objective(trial: optuna.Trial, obstacle_percentages, n_envs, algo):
                                              trail=trial.suggest_float("trail", 0.1, 1.0),
                                              step_size=CONFIG.train_config.step_size,
                                              num_processes=6)
-        elif algo == "pso":
+        elif algo_id == "pso":
             algo = ParticleSwarmOptimization(environment,
                                              num_particles=CONFIG.algos["pso"].pso_num_particles,
                                              convergence_iter=trial.suggest_int("convergence_iter", 100, 5000),
@@ -72,7 +70,7 @@ def objective(trial: optuna.Trial, obstacle_percentages, n_envs, algo):
                                              step_size=CONFIG.train_config.step_size,
                                              inertia_weight=trial.suggest_float("inertia_weight", 0.1, 1.0),
                                              max_iter=CONFIG.train_config.convergence_iter)
-        elif algo == "firefly":
+        elif algo_id == "firefly":
             algo = FireflyAlgorithm(environment,
                                     population_size=CONFIG.algos["firefly"].fa_population_size,
                                     alpha_init=trial.suggest_float("alpha_init", 0.0, 1.0),
@@ -129,6 +127,7 @@ if '__main__' == __name__:
     best_params = {}
 
     for algo in CONFIG.ALGORITHMS:
+        print(f"Tuning {algo}")
         best_params.update(tune(obstacle_percentages, n_envs, algo, n_trials=100, verbose=0))
 
     print(best_params)

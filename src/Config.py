@@ -39,7 +39,7 @@ class AlgoConfig:
 @dataclass
 class ACOConfig(AlgoConfig):
     aco_agents_per_generation = 30
-    aco_no_generations = 30
+    aco_no_generations = 20
     aco_q = 500
     aco_evaporation = 0.5
     aco_no_change_iter = 30

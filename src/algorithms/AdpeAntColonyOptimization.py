@@ -5,6 +5,7 @@ from environments.ACOEnvironment import ACOEnvironment
 from agents.Ant import Ant
 from multiprocessing import Pool
 
+from environments.Environment import Environment
 from helpers.Path import Path
 from helpers.PathSpecification import PathSpecification
 
@@ -21,7 +22,7 @@ class AdpeAntColonyOptimization(Algorithm):
     algorithm.
     """
 
-    def __init__(self, environment: ACOEnvironment, ants_per_gen: int, generations: int, q: int, evaporation: float,
+    def __init__(self, environment: Environment, ants_per_gen: int, generations: int, q: int, evaporation: float,
                  convergence_iter: int, no_change_iter: int, trail: float, sigma_elite: int,
                  default_elitist_probability: float = 0.5, step_size: int = 1, num_processes: int = 6,
                  obstacle_distance: int = 0):

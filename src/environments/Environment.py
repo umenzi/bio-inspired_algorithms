@@ -202,8 +202,6 @@ class Environment:
                     obstacles.append(Obstacle(obstacle_pos, obstacle[0]))
                     current_amount += 1
 
-        print("Finished preparing the environment")
-
         return Environment(width, height, obstacles, start_pos, end_pos)
 
 
