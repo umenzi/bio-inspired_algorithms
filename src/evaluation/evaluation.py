@@ -1,3 +1,5 @@
+import time
+
 import pandas as pd
 import numpy as np
 
@@ -56,11 +58,13 @@ def obtain_algo(algo_id, environment) -> Algorithm:
         raise ValueError("Invalid algo_id")
 
 
-def evaluate(obstacle_percentages):
+def evaluate(obstacle_percentages, n_envs, trials):
     """
     Evaluates the algorithms for the given obstacle percentages
 
     :param obstacle_percentages: The obstacle percentages
+    :param n_envs: The number of environments per obstacle percentage
+    :param trials: The number of trials per environment
 
     :return: The results dataframe.
     The columns are the algorithms and the rows are the obstacle percentages.
@@ -76,15 +80,14 @@ def evaluate(obstacle_percentages):
 
         # Loop over the obstacle percentages
         for obstacle_percentage in obstacle_percentages:
-            # Initialize the list of path lengths for the current obstacle percentage
-            obstacle_path_lengths = []
+            # Initialize the list of metric values for the current obstacle percentage
+            metric_values = {"path_length": [], "time": [], "reachability": []}
 
-            # Run the algorithm 20 times for the current obstacle percentage
-            for _ in range(20):
+            # We generate n_envs environments
+            for _ in range(n_envs):
                 # Create the environment
-                environment = Environment(
-                    CONFIG.env.width, CONFIG.env.height, obstacles=obstacle_percentage,
-                    start=CONFIG.env.start_pos, end=CONFIG.env.end_pos)
+                environment = Environment(CONFIG.env.width, CONFIG.env.height, obstacles=obstacle_percentage,
+                                          start=CONFIG.env.start_pos, end=CONFIG.env.end_pos)
                 if algo_id == "aco":
                     environment = ACOEnvironment.create_from_environment(environment)
 
@@ -92,25 +95,42 @@ def evaluate(obstacle_percentages):
 
                 algo: Algorithm = obtain_algo(algo_id, environment)
 
-                # Run the algorithm
-                path, checkpoints = algo.run(path_specification, print_progress=False)
+                # Run the algorithm trials times for the current obstacle percentage
+                for _ in range(trials):
+                    # Start timer
+                    start_time = time.time()
 
-                # Append the path length to the list of path lengths for the current obstacle percentage
-                obstacle_path_lengths.append(len(path))
+                    # Run the algorithm
+                    path, checkpoints = algo.run(path_specification, print_progress=False)
 
-            # Calculate the average path length for the current obstacle percentage
-            average_path_length = np.mean(obstacle_path_lengths)
+                    # Stop the timer and calculate the elapsed time
+                    runtime = time.time() - start_time
 
-            # Append the average path length to the list of path lengths for the current algorithm
-            path_lengths.append(average_path_length)
+                    reached = path.get_path()[-1] == path_specification.end
 
-        # Add the list of path lengths for the current algorithm to the results' dictionary
-        results[algo_id] = path_lengths
+                    if reached:
+                        metric_values["path_length"].append(path.size())
 
-        # Convert the results' dictionary to a pandas DataFrame and print it
-        df = pd.DataFrame(results, index=[str(op) for op in obstacle_percentages])
+                    metric_values["reachability"].append(reached)
+                    metric_values["time"].append(runtime)
 
-        return df
+            for metric, values in metric_values.items():
+                # Calculate the mean and standard deviation of the metric values
+                mean = np.mean(values)
+                std = np.std(values)
+
+                key = (str(obstacle_percentage), metric)
+
+                if key not in results:
+                    results[key] = {}
+
+                # Add the mean and standard deviation to the results' dictionary
+                results[key][algo_id] = (mean, std)
+
+    # Convert the results' dictionary to a pandas DataFrame and print it
+    df = pd.DataFrame(results)
+
+    return df
 
 
 if '__main__' == __name__:
@@ -119,8 +139,11 @@ if '__main__' == __name__:
                             [(2.5, 0.175), (1.5, 0.05)],
                             [(2.5, 0.2), (1.5, 0.08)]]
 
+    n_envs = 4  # We generate 4 environments per obstacle percentage
+    trials = 20  # We run each algorithm 20 times per environment
+
     # Evaluate the algorithms
-    results = evaluate(obstacle_percentages)
+    results = evaluate(obstacle_percentages, n_envs, trials)
 
     # Print the results
     print(results)
