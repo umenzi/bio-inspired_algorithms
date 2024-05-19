@@ -115,7 +115,8 @@ class ParticleSwarmOptimization(Algorithm):
 
             # Add global best to the path
             path.add(global_best_pos)
-            print(global_best_pos)
+            if print_progress:
+                print(global_best_pos)
 
             if (generation + 1) == 1 or (generation + 1) == 3 or (generation + 1) == 5 \
                     or (generation + 1) == 9 or (generation + 1) % 10 == 0:

@@ -1,5 +1,6 @@
 from typing import Any
 
+import numpy as np
 import optuna
 from numpy.random import PCG64
 
@@ -8,7 +9,6 @@ from algorithms.AdpeAntColonyOptimization import AdpeAntColonyOptimization
 from algorithms.AntColonyOptimization import AntColonyOptimization
 from algorithms.FireflyAlgorithm import FireflyAlgorithm
 from algorithms.ParticleSwarmOptimization import ParticleSwarmOptimization
-from environments.ACOEnvironment import ACOEnvironment
 from environments.Environment import Environment
 from helpers.PathSpecification import PathSpecification
 
@@ -28,7 +28,7 @@ def objective(trial: optuna.Trial, obstacle_percentages, n_envs, algo_id):
     # random seed
     seed = PCG64()
 
-    new_size = 0
+    results = []
 
     for i in range(n_envs):
         # Create a new environment and path specification
@@ -41,8 +41,8 @@ def objective(trial: optuna.Trial, obstacle_percentages, n_envs, algo_id):
         # Select the correct algorithm
         if algo_id == "aco":
             algo = AntColonyOptimization(environment,
-                                         CONFIG.algos["aco"].aco_agents_per_generation,
-                                         CONFIG.algos["aco"].aco_no_generations,
+                                         20,
+                                         10,
                                          q=trial.suggest_int("q", 100, 1000),
                                          evaporation=trial.suggest_float("evaporation", 0.1, 0.9),
                                          convergence_iter=CONFIG.train_config.convergence_iter,
@@ -52,8 +52,8 @@ def objective(trial: optuna.Trial, obstacle_percentages, n_envs, algo_id):
                                          num_processes=6)
         elif algo_id == "adpe_aco":
             algo = AdpeAntColonyOptimization(environment,
-                                             CONFIG.algos["aco"].aco_agents_per_generation,
-                                             CONFIG.algos["aco"].aco_no_generations,
+                                             20,
+                                             10,
                                              q=trial.suggest_int("q", 100, 1000),
                                              evaporation=trial.suggest_float("evaporation", 0.1, 0.9),
                                              convergence_iter=CONFIG.train_config.convergence_iter,
@@ -65,7 +65,7 @@ def objective(trial: optuna.Trial, obstacle_percentages, n_envs, algo_id):
         elif algo_id == "pso":
             algo = ParticleSwarmOptimization(environment,
                                              num_particles=CONFIG.algos["pso"].pso_num_particles,
-                                             convergence_iter=trial.suggest_int("convergence_iter", 100, 5000),
+                                             convergence_iter=CONFIG.train_config.convergence_iter,
                                              trail=trial.suggest_float("trail", 0.1, 1.0),
                                              step_size=CONFIG.train_config.step_size,
                                              inertia_weight=trial.suggest_float("inertia_weight", 0.1, 1.0),
@@ -73,10 +73,10 @@ def objective(trial: optuna.Trial, obstacle_percentages, n_envs, algo_id):
         elif algo_id == "firefly":
             algo = FireflyAlgorithm(environment,
                                     population_size=CONFIG.algos["firefly"].fa_population_size,
-                                    alpha_init=trial.suggest_float("alpha_init", 0.0, 1.0),
-                                    alpha_end=trial.suggest_float("alpha_final", 0.0, 1.0),
-                                    gamma_init=trial.suggest_float("gamma_init", 0.0, 10.0),
-                                    gamma_end=trial.suggest_float("gamma_end", 0.0, 10.0),
+                                    alpha_init=trial.suggest_float("alpha_init", 0.5, 1.0),
+                                    alpha_end=trial.suggest_float("alpha_final", 0.0, 0.5),
+                                    gamma_init=trial.suggest_float("gamma_init", 0.0, 3.0),
+                                    gamma_end=trial.suggest_float("gamma_end", 3.0, 10.0),
                                     beta=trial.suggest_float("beta", 0.0, 1.0),
                                     max_iter=CONFIG.train_config.convergence_iter,
                                     step_size=CONFIG.train_config.step_size)
@@ -85,15 +85,9 @@ def objective(trial: optuna.Trial, obstacle_percentages, n_envs, algo_id):
 
         # Obtain the shortest path length
         shortest_path, checkpoints = algo.run(spec, print_progress=False)
-        new_size = shortest_path.size()
+        results.append(shortest_path.size())
 
-        trial.report(shortest_path.size(), i)
-
-        # Handle pruning based on the intermediate value.
-        if trial.should_prune():
-            raise optuna.exceptions.TrialPruned()
-
-    return new_size
+    return np.mean(results)
 
 
 def tune(obstacle_percentages, n_envs, algo, n_trials=100, verbose: int = 0) -> dict[str, Any]:
@@ -123,11 +117,12 @@ def tune(obstacle_percentages, n_envs, algo, n_trials=100, verbose: int = 0) -> 
 
 if '__main__' == __name__:
     obstacle_percentages = [(2.5, 0.2), (1.5, 0.08)]
-    n_envs = 5
+    n_envs = 4
+    n_trials = 100
     best_params = {}
 
     for algo in CONFIG.ALGORITHMS:
         print(f"Tuning {algo}")
-        best_params.update(tune(obstacle_percentages, n_envs, algo, n_trials=100, verbose=0))
+        best_params.update(tune(obstacle_percentages, n_envs, algo, n_trials=n_trials, verbose=0))
 
     print(best_params)

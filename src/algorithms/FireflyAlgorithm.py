@@ -87,6 +87,7 @@ class FireflyAlgorithm(Algorithm):
                     if fireflies[i].intensity > best:
                         best = fireflies[i].intensity
                         path = fireflies[i].path
-                        print(fireflies[i].intensity)
+                        if print_progress:
+                            print(fireflies[i].intensity)
 
         return path, checkpoints
