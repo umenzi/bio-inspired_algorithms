@@ -58,13 +58,14 @@ def obtain_algo(algo_id, environment) -> Algorithm:
         raise ValueError("Invalid algo_id")
 
 
-def evaluate(obstacle_percentages, n_envs, trials):
+def evaluate(obstacle_percentages, n_envs, trials, verbose=0):
     """
     Evaluates the algorithms for the given obstacle percentages
 
     :param obstacle_percentages: The obstacle percentages
     :param n_envs: The number of environments per obstacle percentage
     :param trials: The number of trials per environment
+    :param verbose: The verbosity level
 
     :return: The results dataframe.
     The columns are the algorithms and the rows are the obstacle percentages.
@@ -78,16 +79,23 @@ def evaluate(obstacle_percentages, n_envs, trials):
         # Initialize the list of path lengths for the current algorithm
         path_lengths = []
 
+        if verbose >= 1:
+            print(f"Evaluating {algo_id}...")
+
         # Loop over the obstacle percentages
         for obstacle_percentage in obstacle_percentages:
             # Initialize the list of metric values for the current obstacle percentage
             metric_values = {"path_length": [], "time": [], "reachability": []}
 
+            if verbose >= 1:
+                print(f"For the obstacle percentage: {obstacle_percentage}")
+
             # We generate n_envs environments
-            for _ in range(n_envs):
+            for i in range(n_envs):
                 # Create the environment
-                environment = Environment(CONFIG.env.width, CONFIG.env.height, obstacles=obstacle_percentage,
-                                          start=CONFIG.env.start_pos, end=CONFIG.env.end_pos)
+                environment = Environment.create_environment(CONFIG.env.width, CONFIG.env.height,
+                                                             obstacle_percentage, start_pos=CONFIG.env.start_pos,
+                                                             end_pos=CONFIG.env.end_pos)
                 if algo_id == "aco":
                     environment = ACOEnvironment.create_from_environment(environment)
 
@@ -113,6 +121,9 @@ def evaluate(obstacle_percentages, n_envs, trials):
 
                     metric_values["reachability"].append(reached)
                     metric_values["time"].append(runtime)
+
+                if verbose >= 1:
+                    print(f"Environment {i + 1} done...")
 
             for metric, values in metric_values.items():
                 # Calculate the mean and standard deviation of the metric values
@@ -141,9 +152,11 @@ if '__main__' == __name__:
 
     n_envs = 4  # We generate 4 environments per obstacle percentage
     trials = 20  # We run each algorithm 20 times per environment
+    verbose = 1
 
     # Evaluate the algorithms
-    results = evaluate(obstacle_percentages, n_envs, trials)
+    results = evaluate(obstacle_percentages, n_envs, trials, verbose=verbose)
 
-    # Print the results
-    print(results)
+    if verbose >= 1:
+        # Print the results
+        print(results)

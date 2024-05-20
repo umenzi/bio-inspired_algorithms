@@ -179,7 +179,8 @@ class Environment:
                 (start_pos.x < 0 or start_pos.y < 0 or end_pos.x < 0 or end_pos.y < 0 or start_pos.x >= width
                  or start_pos.y >= height or end_pos.x >= width or end_pos.y >= height or
                  (start_pos.x == end_pos.x and start_pos.y == end_pos.y))):
-            raise ValueError("The given start_pos and end_pos are not valid: make sure that both start_pos and end_pos")
+            raise ValueError("The given start_pos and end_pos are not valid: make sure that both start_pos and end_pos"
+                             " are within the bounds of the environment and that they are not the same")
 
         random.seed(seed)
 
