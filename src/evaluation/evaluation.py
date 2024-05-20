@@ -160,3 +160,5 @@ if '__main__' == __name__:
     if verbose >= 1:
         # Print the results
         print(results)
+
+    results.to_csv("results.csv", index=False)
