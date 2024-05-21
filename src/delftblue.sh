@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 #SBATCH --job-name="evaluate_honours"
 #SBATCH --partition=gpu
@@ -23,4 +23,4 @@ module load py-pip
 pip install optuna
 pip install pandas
 
-srun evaluation/evaluation.py > output.log
+srun python evaluation/evaluation.py > output.log
