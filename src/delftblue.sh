@@ -23,4 +23,6 @@ module load py-pip
 pip install optuna
 pip install pandas
 
+export PYTHONPATH="${PYTHONPATH}:/scratch/jpaezfranco/bio-inspired_algorithms/src"
+
 srun python evaluation/evaluation.py > output.log
