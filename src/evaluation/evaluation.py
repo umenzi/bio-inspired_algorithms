@@ -161,4 +161,4 @@ if '__main__' == __name__:
         # Print the results
         print(results)
 
-    results.to_csv("results_ff_pso.csv", index=False)
+    results.to_csv("results.csv", index=False)
