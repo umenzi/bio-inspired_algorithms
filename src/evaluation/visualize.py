@@ -10,7 +10,7 @@ pd.set_option('display.width', None)
 df = pd.read_csv('../results.csv')
 
 # Create a list with the new index values
-new_index = ['aco' if i == 1 else 'pso' if i == 2 else 'firefly' if i == 3 else '' for i in df.index]
+new_index = ['aco' if i == 1 else 'adpe_aco' if i == 2 else 'pso' if i == 3 else 'firefly' if i == 4 else '' for i in df.index]
 
 # Set the new index
 df.index = new_index
