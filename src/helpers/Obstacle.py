@@ -15,3 +15,6 @@ class Obstacle:
 
     def get_radius(self):
         return self.radius
+
+    def __str__(self):
+        return f"{self.center}, {self.radius}"
