@@ -1,10 +1,11 @@
+from algorithms.Algorithm import Algorithm
 from environments.Environment import Environment
 from agents.Firefly import Firefly
 from helpers.PathSpecification import PathSpecification
 from helpers.Path import Path
 
 
-class FireflyAlgorithm:
+class FireflyAlgorithm(Algorithm):
     """
     Firefly Algorithm is a population-based optimisation technique inspired by the social behaviour of fireflies.
 
@@ -17,59 +18,76 @@ class FireflyAlgorithm:
     are drawn from a Lévy distribution. This allows the fireflies to explore the search space more effectively.
     """
 
-    def __init__(self, environment: Environment, path_specification: PathSpecification, population_size, alpha_init=1.0,
-                 alpha_end=0.1, gamma_init=0.1, gamma_end: int = 5, beta=1, max_iter=100,
-                 step_size: int = 1, obstacle_distance: int = 0):
+    def __init__(self, environment: Environment, population_size,
+                 alpha_init: float = 1.0, alpha_end: float = 0.1, gamma_init: float = 0.1, gamma_end: float = 5,
+                 beta=1, max_iter=100, step_size: int = 1, obstacle_distance: int = 0):
         assert gamma_init < gamma_end, "Gamma init must be smaller than gamma end"
         assert alpha_init > alpha_end, "Alpha init must be greater than alpha end"
 
-        self.environment = environment
-        self.path_specification = path_specification
-        self.path = Path(path_specification.start)
-
+        super().__init__(environment, step_size, obstacle_distance)
         self.max_iter = max_iter
-        self.best = None
-        self.fireflies = [
-            Firefly(environment, path_specification, alpha_init, alpha_end, beta, gamma_init,
-                    gamma_end, step_size, obstacle_distance) for _ in range(population_size)]
+        self.population_size = population_size
+        self.alpha_init = alpha_init
+        self.alpha_end = alpha_end
+        self.gamma_init = gamma_init
+        self.gamma_end = gamma_end
+        self.beta = beta
 
-    def run(self):
+    def run(self, path_specification: PathSpecification, print_progress: bool = True) -> (Path, list):
+        """
+        The Firefly Algorithm to find the shortest path across generations.
+
+        :param path_specification: The start and end coordinates of the path
+        :param print_progress: Whether we print the result of each generation
+
+        :return: The best path found and a list of checkpoints
+        """
+        # Initialize variables
+        path_specification = path_specification
+        path = Path(path_specification.start)
+
+        best = None
+        fireflies = [
+            Firefly(self.environment, path_specification, self.alpha_init, self.alpha_end, self.beta, self.gamma_init,
+                    self.gamma_end, self.step_size, self.obstacle_distance) for _ in range(self.population_size)]
+
         checkpoints = []
 
-        if not self.best or (self.fireflies[0].intensity > self.best):
-            self.best = self.fireflies[0].intensity
+        if not best or (fireflies[0].intensity > best):
+            best = fireflies[0].intensity
 
         for generation in range(self.max_iter):
-            for i in range(len(self.fireflies)):
+            for i in range(len(fireflies)):
                 const_count = 0
-                for j in range(len(self.fireflies)):
+                for j in range(len(fireflies)):
                     # We want to maximize the brightness (i.e. minimize distance to goal)
-                    if self.fireflies[i].intensity < self.fireflies[j].intensity:
+                    if fireflies[i].intensity < fireflies[j].intensity:
                         adaptive = generation / self.max_iter
-                        self.fireflies[i].move_towards(self.fireflies[j].position, adaptive)
+                        fireflies[i].move_towards(fireflies[j].position, adaptive)
 
                         # We double-check because of uncertainty in the fireflies' movement
-                        if self.fireflies[i].intensity < self.fireflies[j].intensity:
-                            self.fireflies[i].move_towards(self.fireflies[j].position, adaptive)
+                        if fireflies[i].intensity < fireflies[j].intensity:
+                            fireflies[i].move_towards(fireflies[j].position, adaptive)
                     # If we don't move for 10 fireflies, make a Lévy flight
                     elif const_count >= 10:
                         const_count = 0
-                        self.fireflies[i].random_move(0.1)
+                        fireflies[i].random_move(0.1)
                     else:
                         const_count += 1
 
-                    self.fireflies[i].update_intensity()
+                    fireflies[i].update_intensity()
 
                     if (generation + 1) == 1 or (generation + 1) == 3 or (generation + 1) == 5 \
                             or (generation + 1) == 9 or (generation + 1) % 10 == 0:
-                        checkpoints.append(self.path.size())
+                        checkpoints.append(path.size())
 
-                    if self.fireflies[i].reach_end():
-                        return self.fireflies[i].path, checkpoints
+                    if fireflies[i].reach_end():
+                        return fireflies[i].path, checkpoints
 
-                    if self.fireflies[i].intensity > self.best:
-                        self.best = self.fireflies[i].intensity
-                        self.path = self.fireflies[i].path
-                        print(self.fireflies[i].intensity)
+                    if fireflies[i].intensity > best:
+                        best = fireflies[i].intensity
+                        path = fireflies[i].path
+                        if print_progress:
+                            print(fireflies[i].intensity)
 
-        return self.path, checkpoints
+        return path, checkpoints

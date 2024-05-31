@@ -1,13 +1,16 @@
 import random
 
-from environments import ACOEnvironment
+from algorithms.Algorithm import Algorithm
+from environments.ACOEnvironment import ACOEnvironment
 from agents.Ant import Ant
 from multiprocessing import Pool
 
+from environments.Environment import Environment
 from helpers.Path import Path
+from helpers.PathSpecification import PathSpecification
 
 
-class ADPE_AntColonyOptimization:
+class AdpeAntColonyOptimization(Algorithm):
     """
     Ant Colony Optimization is an algorithm based on the exploratory behaviour of ants to find food.
 
@@ -19,10 +22,12 @@ class ADPE_AntColonyOptimization:
     algorithm.
     """
 
-    def __init__(self, environment: ACOEnvironment, ants_per_gen: int, generations: int, q: int,
-                 evaporation: float, convergence_iter: int, no_change_iter: int, trail: float, sigma_elite: int,
-                 default_elitist_probability: float = 0.5, step_size: int = 1, num_processes: int = 6):
-        self.environment: ACOEnvironment = environment
+    def __init__(self, environment: Environment, ants_per_gen: int, generations: int, q: int, evaporation: float,
+                 convergence_iter: int, no_change_iter: int, trail: float, sigma_elite: int,
+                 default_elitist_probability: float = 0.5, step_size: int = 1, num_processes: int = 6,
+                 obstacle_distance: int = 0):
+        super().__init__(environment, step_size, obstacle_distance)
+        self.environment: ACOEnvironment = ACOEnvironment.create_from_environment(self.environment)
         self.ants_per_gen: int = ants_per_gen
         self.generations: int = generations
         self.q: int = q
@@ -30,13 +35,12 @@ class ADPE_AntColonyOptimization:
         self.convergence_iter: int = convergence_iter
         self.no_change_iter: int = no_change_iter
         self.trail: float = trail
-        self.step_size: int = step_size
         self.num_processes: int = num_processes
         self.sigma_elite: int = sigma_elite
         self.default_elitist_probability: float = default_elitist_probability
         self.maximum_global_tour_length = None
 
-    def run(self, path_specification, print_progress=True):
+    def run(self, path_specification: PathSpecification, print_progress: bool = True) -> (Path, list):
         """
         The ACO algorithm to find the shortest path across generations.
 
