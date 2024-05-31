@@ -47,9 +47,10 @@ The framework includes a simple evaluation of the algorithms, where we compare t
 - Reachability.
 - Planning.
 
-We evaluate the performance of algorithms for different obstacle densities, with each density level being tested in four distinct, randomly generated environments.
-Subsequently, 20 individual experiments are conducted for each obstacle-environment combination.
-We then compute the ean of the metrics from these 80 experiments, which provides a robust and reliable basis for the comparison.
+We evaluate the performance of algorithms for different obstacle densities, with each density level being tested in four
+distinct, randomly generated environments. Subsequently, 20 individual experiments are conducted for each
+obstacle-environment combination. We then compute the ean of the metrics from these 80 experiments, 
+which provides a robust and reliable basis for the comparison.
 
 The code can be found in the `evaluation` folder.
 We also perform some hyperparameter tuning, using the [Optuna](https://optuna.org/) library.
