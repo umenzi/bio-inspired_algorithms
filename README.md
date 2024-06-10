@@ -18,10 +18,9 @@ There are multiple components in this project, each with its own default impleme
 - The default environment, `Environment.py`, is a 2D grid with obstacles and a starting and final position.
   - Special relevance for the  `visualize_environment` method, which plots the environment and the path found by the
     algorithm, if any.
-    - The user can generate as many types of obstacles as desired
-      by providing an array of the obstacles' radius and their frequencies. 
-      The obstacles are then generated randomly in the inner 80% of the environment.
-- The agents, `Agent.py`, are able to move in the four cardinal directions.
+    - The user can generate as many types of obstacles as desired by providing an array of the obstacles' radius
+      and their frequencies. The obstacles are then generated randomly in the inner 80% of the environment.
+- The agents, `Agent.py`.
 - The algorithms are stored in the `algorithms` folder.
 - Additional helper classes, such as `Coordinate.py` or `Direction.py`, are also provided in the `helpers` folder.
 
@@ -29,7 +28,7 @@ There are multiple components in this project, each with its own default impleme
 ### Swarm algorithms
 
 The following are the algorithms currently implemented:
-- Particle Swarm Optimization (PSO). [4]
+- Particle Swarm Optimization (PSO) [4].
 - Ant Colony Optimization (ACO).
 - Adaptive dynamic probabilistic elitist ACO (ADPE ACO) [2].
 - Adaptive Firefly Algorithm (AFFA) [1, 3].
@@ -49,7 +48,7 @@ The framework includes a simple evaluation of the algorithms, where we compare t
 
 We evaluate the performance of algorithms for different obstacle densities, with each density level being tested in four
 distinct, randomly generated environments. Subsequently, 20 individual experiments are conducted for each
-obstacle-environment combination. We then compute the ean of the metrics from these 80 experiments, 
+obstacle-environment combination. We then compute the mean of the metrics from these 80 experiments, 
 which provides a robust and reliable basis for the comparison.
 
 The code can be found in the `evaluation` folder.
